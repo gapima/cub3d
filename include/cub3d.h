@@ -26,15 +26,16 @@ typedef struct s_color {
 }	t_color;
 
 typedef struct s_config {
-	char	*no_text;
-	char	*so_text;
-	char	*we_text;
-	char	*ea_text;
+	char	*no_tex;
+	char	*so_tex;
+	char	*we_tex;
+	char	*ea_tex;
 	t_color	floor;
 	t_color	ceiling;
 	char	**map;
 	int		map_height;
 }	t_config;
+
 
 //funcoes para do parsing
 int		parse_cub_file(char *path, t_config *config);
