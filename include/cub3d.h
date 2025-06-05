@@ -5,42 +5,43 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/03 16:59:05 by glima             #+#    #+#             */
-/*   Updated: 2025/06/03 16:59:05 by glima            ###   ########.fr       */
+/*   Created: 2025/06/05 19:30:42 by glima             #+#    #+#             */
+/*   Updated: 2025/06/05 19:30:42 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB3D_H
 # define CUB3D_H
 
+# include <MLX42/MLX42.h>
+# include "../lib/libft/libft.h"
 # include <stdlib.h>
 # include <stdio.h>
 # include <fcntl.h>
 # include <unistd.h>
-# include <string.h>
 
-typedef struct s_color {
-	int	r;
-	int	g;
-	int	b;
-}	t_color;
-
-typedef struct s_config {
-	char	*no_tex;
-	char	*so_tex;
-	char	*we_tex;
-	char	*ea_tex;
-	t_color	floor;
-	t_color	ceiling;
+typedef struct s_config
+{
+	char	*no_path;
+	char	*so_path;
+	char	*we_path;
+	char	*ea_path;
+	int		floor_color;
+	int		ceiling_color;
 	char	**map;
+    int		map_width;
 	int		map_height;
+
+	int		player_x;
+	int		player_y;
+	char	player_dir;
+
 }	t_config;
 
 
-//funcoes para do parsing
-int		parse_cub_file(char *path, t_config *config);
-void	free_config(t_config *config);
-void	print_config(const t_config *config);
+void	parse_cub_file(const char *path, t_config *cfg);
+int		rgb_to_int(char *line);
 
 
 #endif
+

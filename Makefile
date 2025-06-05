@@ -1,75 +1,48 @@
 NAME = cub3D
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Iinclude -I./lib/MLX42/include
+CFLAGS = -Wall -Wextra -Werror -Iinclude -Ilib/MLX42/include
 
-# Fontes do projeto
-SRC = src/main.c \
-      src/parser/parse_cub_file.c \
-      src/parser/free_config.c
+# Diretórios
+SRC_DIR = src
+INCLUDE_DIR = include
+LIBFT_DIR = lib/libft
+MLX_DIR = lib/MLX42
+BUILD_DIR = $(MLX_DIR)/build
 
+# Bibliotecas
+MLX_LIB = $(BUILD_DIR)/libmlx42.a
+LIBFT_LIB = $(LIBFT_DIR)/libft.a
+MLX_FLAGS = -I$(MLX_DIR)/include -L$(BUILD_DIR) -lmlx42 -ldl -lm -lglfw -pthread
+
+# Arquivos fonte
+SRC = $(wildcard $(SRC_DIR)/*.c)
 OBJ = $(SRC:.c=.o)
 
-# Libft
-LIBFT_DIR = ./libft
-LIBFT = $(LIBFT_DIR)/libft.a
-
-# MLX42
-MLX_DIR = ./lib/MLX42
-MLX_BUILD = $(MLX_DIR)/build
-MLX = $(MLX_BUILD)/libmlx42.a
-MLX_FLAGS = -L$(MLX_BUILD) -lmlx42 -ldl -lglfw -pthread -lm
-
-# Compilar tudo
+# Regra principal
 all: $(NAME)
 
-# Compilar libft
-$(LIBFT):
-	@echo "🔧 Compilando libft..."
-	@make -C $(LIBFT_DIR) > /dev/null
+$(MLX_LIB):
+	git clone https://github.com/codam-coding-college/MLX42.git $(MLX_DIR) || true
+	cd $(MLX_DIR) && cmake -B build && cmake --build build
 
-# Compilar MLX42 de forma silenciosa
-$(MLX):
-	@echo "🔧 Compilando MLX42 (silencioso)..."
-	@cmake -S $(MLX_DIR) -B $(MLX_BUILD) > /dev/null 2>&1
-	@cmake --build $(MLX_BUILD) > /dev/null 2>&1
+$(LIBFT_LIB):
+	$(MAKE) -C $(LIBFT_DIR)
 
-# ASCII animation
-ascii:
-	@clear
-	@echo "      ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀🧠"
-	@echo "     ⠀⠀⠀⠀⠀⠀⠀⠀🧱 Iniciando cub3D... ⌂⠀⠀"
-	@i=0; while [ $$i -le 20 ]; do \
-		printf "\r🛰️  Raycasting mapa [%-20s] %d%%" $$(printf '#%.0s' $$(seq 1 $$i)) $$(( $$i * 5 )); \
-		sleep 0.05; \
-		i=`expr $$i + 1`; \
-	done; \
-	echo "\n🚀 cub3D carregado!"
+$(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
+	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -iquote $(INCLUDE_DIR) -I$(LIBFT_DIR) -I./include \
+		-I$(MLX_DIR)/include -Ilib/MLX42/include $(OBJ) $(LIBFT_LIB) $(MLX_FLAGS) -o $(NAME)
 
-# Compilar binário com loading animado
-$(NAME): ascii $(OBJ) $(LIBFT) $(MLX)
-	@echo "🚀 Linkando $(NAME)..."
-	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME) $(MLX_FLAGS)
-
-# Compilar arquivos .c → .o com log amigável
-%.o: %.c
-	@echo "🛠️  Compilando $<"
-	@$(CC) $(CFLAGS) -c $< -o $@
-
-# Limpar objetos
 clean:
-	@echo "🧹 Limpando objetos..."
-	@rm -f $(OBJ)
-	@make -C $(LIBFT_DIR) clean > /dev/null
-	@rm -rf $(MLX_BUILD)
+	rm -f $(OBJ)
+	$(MAKE) -C $(LIBFT_DIR) clean
 
-# Limpar tudo
 fclean: clean
-	@echo "🧨 Limpando binário..."
-	@rm -f $(NAME)
-	@make -C $(LIBFT_DIR) fclean > /dev/null
+	rm -f $(NAME)
+	$(MAKE) -C $(LIBFT_DIR) fclean
 
-# Recompilar tudo
 re: fclean all
 
-.PHONY: all clean fclean re ascii
+bonus: all
+
+.PHONY: all clean fclean re bonus
