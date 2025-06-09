@@ -4,26 +4,35 @@
 static char	*ft_get_line(int fd, char *str)
 {
 	char	*temp;
+	char	*joined;
 	int		temp_len;
 
-	temp = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	temp = malloc(BUFFER_SIZE + 1);
 	if (!temp)
 		return (NULL);
+
 	temp_len = 1;
-	while (ft_strrchr(str, '\n') == NULL && temp_len != 0)
+	while ((str == NULL || ft_strchr(str, '\n') == NULL) && temp_len > 0)
 	{
 		temp_len = read(fd, temp, BUFFER_SIZE);
 		if (temp_len < 0)
 		{
 			free(temp);
+			free(str);
 			return (NULL);
 		}
 		temp[temp_len] = '\0';
-		str = ft_strjoin(str, temp);
+
+		if (!str)
+			str = ft_strdup("");
+		joined = ft_strjoin(str, temp);
+		free(str);
+		str = joined;
 	}
 	free(temp);
 	return (str);
 }
+
 
 static char	*ft_current_line(char *str, char *line)
 {
@@ -89,6 +98,8 @@ char	*get_next_line(int fd)
 		return (NULL);
 	current_line = NULL;
 	current_line = ft_current_line(next_line, current_line);
+
 	next_line = ft_get_line_rest(next_line);
+
 	return (current_line);
 }

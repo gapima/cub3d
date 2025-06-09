@@ -44,8 +44,6 @@ void	parse_cub_file(const char *path, t_config *cfg)
 		exit(EXIT_FAILURE);
 	}
 
-	printf("CHECKPOINT A %d\n", fd);
-
 	while ((line = get_next_line(fd)) != NULL)
 	{
 

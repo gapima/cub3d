@@ -95,7 +95,6 @@ int	main(void)
 
 	// Lê o arquivo .cub
 	parse_cub_file("maps/test.cub", &cfg);
-	printf("CHECKPOINT A\n");
 	printf("NO: %s\n", cfg.no_path ? cfg.no_path : "(null)");
 	printf("SO: %s\n", cfg.so_path ? cfg.so_path : "(null)");
 	printf("WE: %s\n", cfg.we_path ? cfg.we_path : "(null)");
