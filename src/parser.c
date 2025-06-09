@@ -36,41 +36,47 @@ void	parse_cub_file(const char *path, t_config *cfg)
 {
 	int		fd;
 	char	*line;
-	t_list	*map_lines = NULL;
-	bool	map_started = false;
+	t_list	*map_lines;
+	bool	map_started;
+	int		i;
 
+	map_lines = NULL;
+	map_started = false;
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 	{
 		perror("Erro ao abrir o arquivo .cub");
 		exit(EXIT_FAILURE);
 	}
-
 	while ((line = get_next_line(fd)) != NULL)
 	{
 		if (line[0] == '\n' || line[0] == '\0')
-		{
 			free(line);
-			continue;
-		}
-
-		if (!map_started && (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0 ||
-			ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0))
+		else if (!map_started && (ft_strncmp(line, "NO ", 3) == 0
+				|| ft_strncmp(line, "SO ", 3) == 0
+				|| ft_strncmp(line, "WE ", 3) == 0
+				|| ft_strncmp(line, "EA ", 3) == 0))
 			parse_texture(cfg, line);
-		else if (!map_started && (ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0))
+		else if (!map_started && (ft_strncmp(line, "F ", 2) == 0
+				|| ft_strncmp(line, "C ", 2) == 0))
 			parse_color(cfg, line);
 		else
 		{
 			map_started = true;
 			parse_map_line(&map_lines, line);
 		}
-		free(line);
+		if (line)
+			free(line);
 	}
 	close(fd);
-
 	cfg->map = convert_list_to_array(map_lines);
 	ft_lstclear(&map_lines, free);
+	validate_map(cfg);
+	i = 0;
+	while (cfg->map && cfg->map[i])
+		printf("%s\n", cfg->map[i++]);
 }
+
 
 
 void	parse_map(t_config *cfg, const char *path)
@@ -119,7 +125,7 @@ void	parse_map_line(t_list **map_lines, char *line)
 {
 	char *trimmed;
 
-	trimmed = ft_strtrim(line, "\n"); // ou outro trim se preferir
+	trimmed = ft_strtrim(line, " \t\r\n");
 	if (!trimmed)
 	{
 		ft_lstclear(map_lines, free);

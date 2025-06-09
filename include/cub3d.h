@@ -51,6 +51,8 @@ void	parse_map(t_config *cfg, const char *path);
 void	print_map(char **map);
 void	parse_map_line(t_list **map_lines, char *line);
 char	**convert_list_to_array(t_list *map_lines);
+void	validate_map(t_config *cfg);
+void	check_map_closed(char **map, int start_x, int start_y);
 
 #endif
 
