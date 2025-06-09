@@ -20,6 +20,10 @@
 # include <fcntl.h>
 # include <unistd.h>
 
+#define TILE_SIZE 32
+#define WIDTH 800
+#define HEIGHT 600
+
 typedef struct s_config {
 
 	char	*no_path;
@@ -43,6 +47,11 @@ typedef struct s_config {
 	char	player_dir;
 	int		player_x;
 	int		player_y;
+
+	mlx_t		*mlx;
+	mlx_image_t	*img;
+	int			width;
+	int			height;
 }	t_config;
 
 void	parse_cub_file(const char *path, t_config *cfg);
@@ -53,6 +62,8 @@ void	parse_map_line(t_list **map_lines, char *line);
 char	**convert_list_to_array(t_list *map_lines);
 void	validate_map(t_config *cfg);
 void	check_map_closed(char **map, int start_x, int start_y);
-
+void	init_game(t_config *cfg);
+void	render_frame(void *param);
+int		ft_strlen_2d(char **arr);
 #endif
 

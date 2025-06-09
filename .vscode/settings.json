@@ -59,6 +59,8 @@
   "files.associations": {
     "libft.h": "c",
     "fcntl.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "mlx42.h": "c",
+    "stdlib.h": "c"
   }
 }

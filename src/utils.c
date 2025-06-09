@@ -59,3 +59,14 @@ char	**convert_list_to_array(t_list *map_lines)
 	map[i] = NULL;
 	return (map);
 }
+
+int	ft_strlen_2d(char **arr)
+{
+	int	i = 0;
+
+	if (!arr)
+		return (0);
+	while (arr[i])
+		i++;
+	return (i);
+}

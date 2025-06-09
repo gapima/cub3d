@@ -131,6 +131,11 @@ void	parse_map_line(t_list **map_lines, char *line)
 		ft_lstclear(map_lines, free);
 		exit(EXIT_FAILURE);
 	}
+	if (trimmed[0] == '\0') // impede string vazia no mapa
+	{
+		free(trimmed);
+		return;
+	}
 	ft_lstadd_back(map_lines, ft_lstnew(trimmed));
 }
 
