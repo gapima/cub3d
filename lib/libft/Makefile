@@ -52,23 +52,19 @@ SRC = ft_isalpha.c \
 			ft_putstr_fd.c \
 			ft_putendl_fd.c \
 			ft_putnbr_fd.c \
-			get_next_line.c
-
-
-BONUS = ft_lstnew_bonus.c \
+			get_next_line.c \
+			ft_lstnew_bonus.c \
 			ft_lstadd_front_bonus.c \
-				ft_lstsize_bonus.c \
-				ft_lstlast_bonus.c \
-				ft_lstadd_back_bonus.c \
-				ft_lstdelone_bonus.c \
-				ft_lstclear_bonus.c \
-				ft_lstiter_bonus.c \
-				ft_lstmap_bonus.c \
-				ft_lstclear_bonus.c
+			ft_lstsize_bonus.c \
+			ft_lstlast_bonus.c \
+			ft_lstadd_back_bonus.c \
+			ft_lstdelone_bonus.c \
+			ft_lstclear_bonus.c \
+			ft_lstiter_bonus.c \
+			ft_lstmap_bonus.c \
+			ft_lstclear_bonus.c 
 
 OBJECTS = $(SRC:%.c=%.o)
-
-BONUS_OBJECTS = $(BONUS:.c=.o)
 
 all: $(NAME)
 
@@ -78,11 +74,8 @@ all: $(NAME)
 $(NAME): $(OBJECTS)
 		$(AR) $(NAME) $(OBJECTS)
 
-bonus:	$(BONUS_OBJECTS)
-	ar rcs $(NAME) $(BONUS_OBJECTS)
-
 clean:
-	rm -f $(OBJECTS) $(BONUS_OBJECTS)
+	rm -f $(OBJECTS)
 
 fclean: clean
 		rm -f $(NAME)

@@ -85,69 +85,22 @@ void	hook(void *param)
 		mlx_close_window(mlx);
 }
 
-int	main(void)
+int	main(int argc, char **argv)
 {
 	t_config	cfg;
-	mlx_t		*mlx;
-	mlx_image_t	*img;
 
-	ft_memset(&cfg, 0, sizeof(cfg));
-
-	// Lê o arquivo .cub
-	parse_cub_file("maps/test.cub", &cfg);
-	printf("NO: %s\n", cfg.no_path ? cfg.no_path : "(null)");
-	printf("SO: %s\n", cfg.so_path ? cfg.so_path : "(null)");
-	printf("WE: %s\n", cfg.we_path ? cfg.we_path : "(null)");
-	printf("EA: %s\n", cfg.ea_path ? cfg.ea_path : "(null)");
-	printf("F: 0x%X\n", cfg.floor_color);
-	printf("C: 0x%X\n", cfg.ceiling_color);
-
-
-	// Verificações de segurança
-	if (!cfg.no_path || !cfg.so_path || !cfg.we_path || !cfg.ea_path)
+	if (argc != 2)
 	{
-		fprintf(stderr, "Erro: textura faltando.\n");
-		return (1);
-	}
-	if (cfg.floor_color == -1 || cfg.ceiling_color == -1)
-	{
-		fprintf(stderr, "Erro: cor inválida (F ou C).\n");
+		printf("Uso: %s <arquivo .cub>\n", argv[0]);
 		return (1);
 	}
 
-	// Debug
-	printf("NO: %s\n", cfg.no_path);
-	printf("SO: %s\n", cfg.so_path);
-	printf("WE: %s\n", cfg.we_path);
-	printf("EA: %s\n", cfg.ea_path);
-	printf("F: 0x%X\n", cfg.floor_color);
-	printf("C: 0x%X\n", cfg.ceiling_color);
+	ft_memset(&cfg, 0, sizeof(t_config));
+	parse_cub_file(argv[1], &cfg);   // Texturas e cores
+	parse_map(&cfg, argv[1]);        // Mapa
+	print_map(cfg.map);              // Função pra ver o resultado (posso mandar)
 
-	// Inicia MLX
-	mlx = mlx_init(WIDTH, HEIGHT, "cub3D", false);
-	if (!mlx)
-		return (EXIT_FAILURE);
 
-	img = mlx_new_image(mlx, WIDTH, HEIGHT);
-	if (!img)
-	{
-		mlx_terminate(mlx);
-		return (EXIT_FAILURE);
-	}
-
-	// Céu
-	for (int y = 0; y < HEIGHT / 2; y++)
-		for (int x = 0; x < WIDTH; x++)
-			mlx_put_pixel(img, x, y, cfg.ceiling_color);
-
-	// Chão
-	for (int y = HEIGHT / 2; y < HEIGHT; y++)
-		for (int x = 0; x < WIDTH; x++)
-			mlx_put_pixel(img, x, y, cfg.floor_color);
-
-	mlx_image_to_window(mlx, img, 0, 0);
-	mlx_loop_hook(mlx, hook, mlx);
-	mlx_loop(mlx);
-	mlx_terminate(mlx);
 	return (0);
 }
+

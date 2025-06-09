@@ -30,3 +30,32 @@ int	rgb_to_int(char *line)
 
 	return ((r << 24) | (g << 16) | (b << 8) | 0xFF);
 }
+
+void	print_map(char **map)
+{
+	int i = 0;
+	printf("\nMAPA:\n");
+	while (map[i])
+	{
+		printf("%s", map[i]);
+		i++;
+	}
+}
+
+char	**convert_list_to_array(t_list *map_lines)
+{
+	int		count = ft_lstsize(map_lines);
+	char	**map = malloc(sizeof(char *) * (count + 1));
+	t_list	*tmp = map_lines;
+	int		i = 0;
+
+	if (!map)
+		return (NULL);
+	while (tmp)
+	{
+		map[i++] = ft_strdup((char *)tmp->content);
+		tmp = tmp->next;
+	}
+	map[i] = NULL;
+	return (map);
+}

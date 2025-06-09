@@ -20,28 +20,37 @@
 # include <fcntl.h>
 # include <unistd.h>
 
-typedef struct s_config
-{
+typedef struct s_config {
+
 	char	*no_path;
 	char	*so_path;
 	char	*we_path;
 	char	*ea_path;
+
+	char	*no_texture;
+	char	*so_texture;
+	char	*we_texture;
+	char	*ea_texture;
 	int		floor_color;
 	int		ceiling_color;
-	char	**map;
-    int		map_width;
-	int		map_height;
 
+	// NOVOS CAMPOS PARA O MAPA
+	char	**map;
+	int		map_height;
+	int		map_width;
+
+	// POSIÇÃO DO JOGADOR
+	char	player_dir;
 	int		player_x;
 	int		player_y;
-	char	player_dir;
-
 }	t_config;
-
 
 void	parse_cub_file(const char *path, t_config *cfg);
 int		rgb_to_int(char *line);
-
+void	parse_map(t_config *cfg, const char *path);
+void	print_map(char **map);
+void	parse_map_line(t_list **map_lines, char *line);
+char	**convert_list_to_array(t_list *map_lines);
 
 #endif
 
