@@ -26,29 +26,38 @@
 #define HEIGHT 600
 
 typedef struct s_config {
-
+	// Caminhos das texturas
 	char	*no_path;
 	char	*so_path;
 	char	*we_path;
 	char	*ea_path;
 
-	char	*no_texture;
-	char	*so_texture;
-	char	*we_texture;
-	char	*ea_texture;
+	// Texturas carregadas
+	mlx_texture_t	*no_texture;
+	mlx_texture_t	*so_texture;
+	mlx_texture_t	*we_texture;
+	mlx_texture_t	*ea_texture;
+
+	mlx_image_t *no_img;
+	mlx_image_t *so_img;
+	mlx_image_t *we_img;
+	mlx_image_t *ea_img;
+
+	// Cores do chão e teto
 	int		floor_color;
 	int		ceiling_color;
 
-	// NOVOS CAMPOS PARA O MAPA
+	// Mapa
 	char	**map;
 	int		map_height;
 	int		map_width;
 
-	// POSIÇÃO DO JOGADOR
+	// Jogador
 	char	player_dir;
 	int		player_x;
 	int		player_y;
 
+	// MLX
 	mlx_t		*mlx;
 	mlx_image_t	*img;
 	int			width;

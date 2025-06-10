@@ -34,11 +34,12 @@ static void	draw_square(mlx_image_t *img, int x, int y, uint32_t color)
 
 void render_frame(void *param)
 {
-    t_config *cfg = (t_config *)param;
-	int	x, y;
+	t_config *cfg = (t_config *)param;
+	int x, y;
 
 	handle_input(cfg);
 	mlx_image_to_window(cfg->mlx, cfg->img, 0, 0);
+
 	y = -1;
 	while (cfg->map[++y])
 	{
@@ -46,14 +47,24 @@ void render_frame(void *param)
 		while (cfg->map[y][++x])
 		{
 			char tile = cfg->map[y][x];
+
 			if (tile == '1')
-				draw_square(cfg->img, x, y, 0x333333FF); // parede
+			{
+				// Desenha a imagem da parede norte (por enquanto)
+				mlx_image_to_window(cfg->mlx, cfg->no_img, x * TILE_SIZE, y * TILE_SIZE);
+			}
 			else if (tile == '0')
+			{
 				draw_square(cfg->img, x, y, 0xAAAAAAFF); // chão
+			}
 			else if (tile == 'N' || tile == 'S' || tile == 'E' || tile == 'W')
+			{
 				draw_square(cfg->img, x, y, 0x00FF00FF); // jogador
+			}
 			else if (tile == ' ')
+			{
 				draw_square(cfg->img, x, y, 0x000000FF); // espaço vazio
+			}
 		}
 	}
 }

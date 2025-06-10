@@ -14,15 +14,34 @@
 
 static void	parse_texture(t_config *cfg, char *line)
 {
+	char *path;
+
 	if (ft_strncmp(line, "NO ", 3) == 0)
-		cfg->no_path = ft_strdup(line + 3);
+		path = ft_strtrim(line + 3, " \t\r\n");
 	else if (ft_strncmp(line, "SO ", 3) == 0)
-		cfg->so_path = ft_strdup(line + 3);
+		path = ft_strtrim(line + 3, " \t\r\n");
 	else if (ft_strncmp(line, "WE ", 3) == 0)
-		cfg->we_path = ft_strdup(line + 3);
+		path = ft_strtrim(line + 3, " \t\r\n");
 	else if (ft_strncmp(line, "EA ", 3) == 0)
-		cfg->ea_path = ft_strdup(line + 3);
+		path = ft_strtrim(line + 3, " \t\r\n");
+	else
+		return ;
+
+	if (!path)
+	{
+		ft_putstr_fd("Erro ao alocar caminho da textura.\n", 2);
+		exit(EXIT_FAILURE);
+	}
+	if (ft_strncmp(line, "NO ", 3) == 0)
+		cfg->no_path = path;
+	else if (ft_strncmp(line, "SO ", 3) == 0)
+		cfg->so_path = path;
+	else if (ft_strncmp(line, "WE ", 3) == 0)
+		cfg->we_path = path;
+	else if (ft_strncmp(line, "EA ", 3) == 0)
+		cfg->ea_path = path;
 }
+
 
 static void	parse_color(t_config *cfg, char *line)
 {
