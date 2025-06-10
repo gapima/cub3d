@@ -65,5 +65,8 @@ void	check_map_closed(char **map, int start_x, int start_y);
 void	init_game(t_config *cfg);
 void	render_frame(void *param);
 int		ft_strlen_2d(char **arr);
+void	handle_input(t_config *cfg);
+void	handle_key_event(mlx_key_data_t keydata, void *param);
+
 #endif
 

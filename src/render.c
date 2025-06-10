@@ -37,6 +37,7 @@ void render_frame(void *param)
     t_config *cfg = (t_config *)param;
 	int	x, y;
 
+	handle_input(cfg);
 	mlx_image_to_window(cfg->mlx, cfg->img, 0, 0);
 	y = -1;
 	while (cfg->map[++y])
