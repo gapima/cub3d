@@ -20,10 +20,14 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include <time.h>
+#include <math.h>
 
 #define TILE_SIZE 32
 #define WIDTH 800
 #define HEIGHT 600
+
+#define FOV (60 * (M_PI / 180)) // 60 graus em radianos
+#define NUM_RAYS 800
 
 typedef struct s_config {
 	// Caminhos das texturas
@@ -33,6 +37,7 @@ typedef struct s_config {
 	char	*ea_path;
 
 	// Texturas carregadas
+	double	player_angle;
 	mlx_texture_t	*no_texture;
 	mlx_texture_t	*so_texture;
 	mlx_texture_t	*we_texture;
@@ -64,6 +69,14 @@ typedef struct s_config {
 	int			height;
 }	t_config;
 
+typedef struct s_ray_result
+{
+	double		distance;
+	int			texture_x;
+	mlx_texture_t *texture;
+}	t_ray_result;
+
+
 void	parse_cub_file(const char *path, t_config *cfg);
 int		rgb_to_int(char *line);
 void	parse_map(t_config *cfg, const char *path);
@@ -76,6 +89,9 @@ void	init_game(t_config *cfg);
 void	render_frame(void *param);
 int		ft_strlen_2d(char **arr);
 void	handle_input(t_config *cfg);
+void	draw_vertical_slice(t_config *cfg, int screen_x, t_ray_result ray, double ray_angle);
+void	render_3d_frame(t_config *cfg);
+t_ray_result	cast_ray(t_config *cfg, double ray_angle);
 
 #endif
 
