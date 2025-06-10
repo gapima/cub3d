@@ -69,12 +69,21 @@ typedef struct s_config {
 	int			height;
 }	t_config;
 
+typedef enum e_direction {
+        NORTH,
+        SOUTH,
+        EAST,
+        WEST
+}       t_direction;
+
 typedef struct s_ray_result
 {
-	double		distance;
-	int			texture_x;
-	mlx_texture_t *texture;
-}	t_ray_result;
+        double          distance;
+        int                     texture_x;
+        mlx_texture_t *texture;
+        t_direction     direction;
+}       t_ray_result;
+
 
 
 void	parse_cub_file(const char *path, t_config *cfg);
