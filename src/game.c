@@ -14,14 +14,14 @@
 
 void	init_game(t_config *cfg)
 {
-	cfg->width = TILE_SIZE * ft_strlen(cfg->map[0]);
-	cfg->height = TILE_SIZE * ft_strlen_2d(cfg->map);
+    if (!cfg->map || !cfg->map[0])
+    {
+            ft_putstr_fd("❌ Erro: mapa não carregado corretamente\n", 2);
+            exit(EXIT_FAILURE);
+    }
 
-	if (!cfg->map || !cfg->map[0])
-	{
-		ft_putstr_fd("❌ Erro: mapa não carregado corretamente\n", 2);
-		exit(EXIT_FAILURE);
-	}
+    cfg->width = TILE_SIZE * ft_strlen(cfg->map[0]);
+    cfg->height = TILE_SIZE * ft_strlen_2d(cfg->map);
 
 	cfg->mlx = mlx_init(cfg->width, cfg->height, "cub3D", false);
 	if (!cfg->mlx)
