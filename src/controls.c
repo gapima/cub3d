@@ -12,53 +12,36 @@
 
 #include "cub3d.h"
 
+
 void	handle_input(t_config *cfg)
 {
-	int	new_x = cfg->player_x;
-	int	new_y = cfg->player_y;
+	static double	last_move_time = 0;
+	double			current_time;
 
-	if (mlx_is_key_down(cfg->mlx, MLX_KEY_W))
-		new_y--;
-	else if (mlx_is_key_down(cfg->mlx, MLX_KEY_S))
-		new_y++;
-	else if (mlx_is_key_down(cfg->mlx, MLX_KEY_A))
-		new_x--;
-	else if (mlx_is_key_down(cfg->mlx, MLX_KEY_D))
-		new_x++;
+	current_time = mlx_get_time(); // tempo atual em segundos (float)
 
-	// Verifica se o novo local é válido
-	if (cfg->map[new_y][new_x] == '0')
-	{
-		cfg->map[cfg->player_y][cfg->player_x] = '0';
-		cfg->player_x = new_x;
-		cfg->player_y = new_y;
-		cfg->map[new_y][new_x] = 'N'; // ou a direção real
-	}
-}
-
-void	handle_key_event(mlx_key_data_t keydata, void *param)
-{
-	t_config *cfg = (t_config *)param;
-	int new_x = cfg->player_x;
-	int new_y = cfg->player_y;
-
-	if (keydata.action != MLX_PRESS)
+	// cooldown de 0.2 segundos (200ms) entre movimentos
+	if (current_time - last_move_time < 0.2)
 		return;
 
-	if (keydata.key == MLX_KEY_W)
-		new_y--;
-	else if (keydata.key == MLX_KEY_S)
-		new_y++;
-	else if (keydata.key == MLX_KEY_A)
-		new_x--;
-	else if (keydata.key == MLX_KEY_D)
-		new_x++;
+	int	x = cfg->player_x;
+	int	y = cfg->player_y;
 
-	if (cfg->map[new_y][new_x] == '0')
-	{
-		cfg->map[cfg->player_y][cfg->player_x] = '0';
-		cfg->player_x = new_x;
-		cfg->player_y = new_y;
-		cfg->map[new_y][new_x] = 'N'; // ou direção real
-	}
+	if (mlx_is_key_down(cfg->mlx, MLX_KEY_W) && cfg->map[y - 1][x] == '0')
+		y--;
+	else if (mlx_is_key_down(cfg->mlx, MLX_KEY_S) && cfg->map[y + 1][x] == '0')
+		y++;
+	else if (mlx_is_key_down(cfg->mlx, MLX_KEY_A) && cfg->map[y][x - 1] == '0')
+		x--;
+	else if (mlx_is_key_down(cfg->mlx, MLX_KEY_D) && cfg->map[y][x + 1] == '0')
+		x++;
+	else
+		return; // nenhuma tecla válida apertada
+
+	// atualiza posição do jogador no mapa
+	cfg->map[cfg->player_y][cfg->player_x] = '0';
+	cfg->map[y][x] = cfg->player_dir;
+	cfg->player_x = x;
+	cfg->player_y = y;
+	last_move_time = current_time;
 }

@@ -19,6 +19,7 @@
 # include <stdio.h>
 # include <fcntl.h>
 # include <unistd.h>
+# include <time.h>
 
 #define TILE_SIZE 32
 #define WIDTH 800
@@ -66,7 +67,6 @@ void	init_game(t_config *cfg);
 void	render_frame(void *param);
 int		ft_strlen_2d(char **arr);
 void	handle_input(t_config *cfg);
-void	handle_key_event(mlx_key_data_t keydata, void *param);
 
 #endif
 
