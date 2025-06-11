@@ -91,6 +91,7 @@ void	parse_cub_file(const char *path, t_config *cfg)
 	cfg->map = convert_list_to_array(map_lines);
 	ft_lstclear(&map_lines, free);
 	validate_map(cfg);
+	check_single_player(cfg);
 	i = 0;
 	while (cfg->map && cfg->map[i])
 		printf("%s\n", cfg->map[i++]);

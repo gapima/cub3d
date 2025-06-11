@@ -11,40 +11,6 @@
 /* ************************************************************************** */
 #include "cub3d.h"
 
-t_ray_result	cast_ray(t_config *cfg, double ray_angle)
-{
-	t_ray_result	result;
-	double			ray_x = cfg->player_x + 0.5;
-	double			ray_y = cfg->player_y + 0.5;
-	double			delta = 0.01;
-
-	while (1)
-	{
-		int map_x = (int)ray_x;
-		int map_y = (int)ray_y;
-
-		if (cfg->map[map_y][map_x] == '1')
-		{
-			result.distance = sqrt(pow(ray_x - (cfg->player_x + 0.5), 2)
-								+ pow(ray_y - (cfg->player_y + 0.5), 2));
-
-			// Escolher textura com base na direção (simplificado)
-			if (fabs(cos(ray_angle)) > fabs(sin(ray_angle)))
-				result.texture = (cos(ray_angle) > 0) ? cfg->we_texture : cfg->ea_texture;
-			else
-				result.texture = (sin(ray_angle) > 0) ? cfg->no_texture : cfg->so_texture;
-
-			result.texture_x = ((int)(ray_x * TILE_SIZE)) % TILE_SIZE; // Ponto x da textura
-			break;
-		}
-
-		ray_x += cos(ray_angle) * delta;
-		ray_y += sin(ray_angle) * delta;
-	}
-	return (result);
-}
-
-
 int	rgb_to_int(char *line)
 {
 	int	r, g, b;

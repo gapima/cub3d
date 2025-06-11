@@ -26,6 +26,7 @@
 #define WIDTH 800
 #define HEIGHT 600
 
+#define MAX_DEPTH 100.0
 #define FOV (60 * (M_PI / 180)) // 60 graus em radianos
 #define NUM_RAYS 800
 
@@ -69,12 +70,23 @@ typedef struct s_config {
 	int			height;
 }	t_config;
 
+typedef enum e_direction 
+{
+	NORTH,
+	SOUTH,
+	EAST,
+	WEST
+}	t_direction;
+
 typedef struct s_ray_result
 {
-	double		distance;
-	int			texture_x;
-	mlx_texture_t *texture;
+	double			distance;
+	mlx_texture_t	*texture;
+	int				texture_x;
+	char			direction; // NOVO: 'N', 'S', 'E', 'W'
 }	t_ray_result;
+
+
 
 
 void	parse_cub_file(const char *path, t_config *cfg);
@@ -92,6 +104,7 @@ void	handle_input(t_config *cfg);
 void	draw_vertical_slice(t_config *cfg, int screen_x, t_ray_result ray, double ray_angle);
 void	render_3d_frame(t_config *cfg);
 t_ray_result	cast_ray(t_config *cfg, double ray_angle);
-
+void	check_single_player(t_config *cfg);
+void	draw_ceiling_and_floor(t_config *cfg);
 #endif
 

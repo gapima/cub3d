@@ -22,15 +22,14 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	ft_memset(&cfg, 0, sizeof(t_config));
-
 	parse_cub_file(argv[1], &cfg);
 	validate_map(&cfg);
-	init_game(&cfg);
+	check_single_player(&cfg);
+	init_game(&cfg); // cria cfg->mlx, mas não cfg->img
 
-	// Garante que o hook e o loop só rodem se a janela e imagem foram criadas
-	if (cfg.mlx && cfg.img)
+	if (cfg.mlx)
 	{
-		mlx_loop_hook(cfg.mlx, (void (*)(void *))render_frame, &cfg);
+		mlx_loop_hook(cfg.mlx, render_frame, &cfg); // correto agora
 		mlx_loop(cfg.mlx);
 		mlx_terminate(cfg.mlx);
 	}

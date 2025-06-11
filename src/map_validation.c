@@ -55,3 +55,24 @@ void	validate_map(t_config *cfg)
 	check_map_closed(cfg->map, cfg->player_x, cfg->player_y);
 }
 
+void	check_single_player(t_config *cfg)
+{
+	int		y, x;
+	int		player_count = 0;
+	char	c;
+
+	for (y = 0; cfg->map[y]; y++)
+	{
+		for (x = 0; cfg->map[y][x]; x++)
+		{
+			c = cfg->map[y][x];
+			if (c == 'N' || c == 'S' || c == 'E' || c == 'W')
+				player_count++;
+		}
+	}
+	if (player_count != 1)
+	{
+		ft_putstr_fd("❌ Erro: o mapa deve conter exatamente UM jogador\n", 2);
+		exit(EXIT_FAILURE);
+	}
+}
