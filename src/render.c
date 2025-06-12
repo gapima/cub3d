@@ -101,6 +101,12 @@ void draw_vertical_slice(t_config *cfg, int screen_x, t_ray_result ray, double r
 	double	texture_pos;
 	int		y;
 
+	if (!ray.texture)
+	{
+		ft_putstr_fd("❌ Erro: textura nula em draw_vertical_slice\n", 2);
+		return;
+	}
+
 	// Corrige distorção (fisheye)
 	corrected_dist = ray.distance * cos(ray_angle - cfg->player_angle);
 	line_height = (int)(cfg->height / corrected_dist);
@@ -161,7 +167,7 @@ t_ray_result cast_ray(t_config *cfg, double ray_angle)
 	result.distance = MAX_DEPTH;
 	result.texture = NULL;
 	result.texture_x = 0;
-	result.direction = ' '; // vazio por padrão
+	result.direction = ' ';
 
 	double ray_x = cfg->player_x + 0.5;
 	double ray_y = cfg->player_y + 0.5;
@@ -170,8 +176,14 @@ t_ray_result cast_ray(t_config *cfg, double ray_angle)
 	double step = 0.01;
 	double distance = 0.0;
 
+	double last_x = ray_x;
+	double last_y = ray_y;
+
 	while (distance < MAX_DEPTH)
 	{
+		last_x = ray_x;
+		last_y = ray_y;
+
 		ray_x += ray_dx * step;
 		ray_y += ray_dy * step;
 		distance += step;
@@ -186,38 +198,57 @@ t_ray_result cast_ray(t_config *cfg, double ray_angle)
 		{
 			result.distance = distance;
 
-			double hit_x = ray_x - floor(ray_x);
-			double hit_y = ray_y - floor(ray_y);
+			double offset_x = ray_x - floor(ray_x);
+			double offset_y = ray_y - floor(ray_y);
 
-			if (hit_x < step && ray_dx < 0)
+			double delta_x = fabs(ray_x - last_x);
+			double delta_y = fabs(ray_y - last_y);
+
+			if (delta_x > delta_y) // parede vertical
 			{
-				result.direction = 'W';
-				result.texture = cfg->we_texture;
-				result.texture_x = (int)(hit_y * cfg->we_texture->width);
+				if (ray_dx > 0)
+				{
+					result.direction = 'E';
+					result.texture = cfg->ea_texture;
+					result.texture_x = (int)(offset_y * cfg->ea_texture->width);
+				}
+				else
+				{
+					result.direction = 'W';
+					result.texture = cfg->we_texture;
+					result.texture_x = (int)(offset_y * cfg->we_texture->width);
+				}
 			}
-			else if (hit_x > (1.0 - step) && ray_dx > 0)
+			else // parede horizontal
 			{
-				result.direction = 'E';
-				result.texture = cfg->ea_texture;
-				result.texture_x = (int)(hit_y * cfg->ea_texture->width);
-			}
-			else if (hit_y < step && ray_dy < 0)
-			{
-				result.direction = 'N';
-				result.texture = cfg->no_texture;
-				result.texture_x = (int)(hit_x * cfg->no_texture->width);
-			}
-			else
-			{
-				result.direction = 'S';
-				result.texture = cfg->so_texture;
-				result.texture_x = (int)(hit_x * cfg->so_texture->width);
+				if (ray_dy > 0)
+				{
+					result.direction = 'S';
+					result.texture = cfg->so_texture;
+					result.texture_x = (int)(offset_x * cfg->so_texture->width);
+				}
+				else
+				{
+					result.direction = 'N';
+					result.texture = cfg->no_texture;
+					result.texture_x = (int)(offset_x * cfg->no_texture->width);
+				}
 			}
 			break;
 		}
 	}
+
+	if (!result.texture)
+	{
+		ft_putstr_fd("⚠️ Aviso: textura NULL retornada no cast_ray, aplicando fallback.\n", 2);
+		result.texture = cfg->no_texture;
+		result.texture_x = 0;
+	}
+
 	return result;
 }
+
+
 
 void	draw_ceiling_and_floor(t_config *cfg)
 {
