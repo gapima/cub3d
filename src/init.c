@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:26:33 by glima             #+#    #+#             */
-/*   Updated: 2025/06/14 13:07:18 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/14 13:59:20 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ void	init_config(t_config *cfg)
 	}
 
 	mlx_image_to_window(cfg->mlx, cfg->img, 0, 0);
-
-	// Posição e direção inicial do player
 	cfg->player.pos_x = 22.0;
 	cfg->player.pos_y = 12.0;
 	cfg->player.dir_x = -1.0;

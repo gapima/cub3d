@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:31:04 by glima             #+#    #+#             */
-/*   Updated: 2025/06/14 13:34:20 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/14 13:59:34 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ void	parse_cub_file(const char *path, t_config *cfg)
 
 	while ((line = get_next_line(fd)))
 	{
-		// Aqui você vai interpretar as linhas
-		// Exemplo: armazenar o mapa, carregar texturas, detectar posição do player etc.
 		free(line);
 	}
 	close(fd);
