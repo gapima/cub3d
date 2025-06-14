@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:31:04 by glima             #+#    #+#             */
-/*   Updated: 2025/06/14 17:54:48 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/14 19:11:59 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,63 @@
 static int is_valid_map_char(char c)
 {
 	return (c == '0' || c == '1' || c == 'N');
+}
+
+static int parse_color_component(char *str)
+{
+	int value = ft_atoi(str);
+	if (value < 0 || value > 255)
+	{
+		fprintf(stderr, "❌ Erro: Componente de cor fora do intervalo (0-255): %s\n", str);
+		exit(EXIT_FAILURE);
+	}
+	return value;
+}
+
+static void free_split(char **split)
+{
+	int i = 0;
+	while (split && split[i])
+		free(split[i++]);
+	free(split);
+}
+
+static uint32_t parse_color(char *line)
+{
+	char **components = ft_split(line, ',');
+	if (!components || !components[0] || !components[1] || !components[2])
+	{
+		fprintf(stderr, "❌ Erro: Formato de cor inválido: %s\n", line);
+		exit(EXIT_FAILURE);
+	}
+	int r = parse_color_component(components[0]);
+	int g = parse_color_component(components[1]);
+	int b = parse_color_component(components[2]);
+	free_split(components);
+	return (r << 24 | g << 16 | b << 8 | 0xFF);
+}
+
+
+
+static void parse_texture_or_color(t_config *cfg, char *line)
+{
+	if (ft_strncmp(line, "NO ", 3) == 0)
+		cfg->no_path = ft_strdup(line + 3);
+	else if (ft_strncmp(line, "SO ", 3) == 0)
+		cfg->so_path = ft_strdup(line + 3);
+	else if (ft_strncmp(line, "WE ", 3) == 0)
+		cfg->we_path = ft_strdup(line + 3);
+	else if (ft_strncmp(line, "EA ", 3) == 0)
+		cfg->ea_path = ft_strdup(line + 3);
+	else if (ft_strncmp(line, "F ", 2) == 0)
+		cfg->floor_color = parse_color(line + 2);
+	else if (ft_strncmp(line, "C ", 2) == 0)
+		cfg->ceiling_color = parse_color(line + 2);
+	else
+	{
+		fprintf(stderr, "❌ Erro: Linha inválida: %s\n", line);
+		exit(EXIT_FAILURE);
+	}
 }
 
 void parse_cub_file(const char *path, t_config *cfg)
@@ -29,8 +86,7 @@ void parse_cub_file(const char *path, t_config *cfg)
 	char *line;
 	int y = 0;
 	int player_found = 0;
-	int has_started = 0;
-	int has_ended = 0;
+	int map_started = 0;
 	char **map = malloc(sizeof(char *) * (MAX_MAP_HEIGHT + 1));
 
 	while ((line = get_next_line(fd)) && y < MAX_MAP_HEIGHT)
@@ -38,20 +94,19 @@ void parse_cub_file(const char *path, t_config *cfg)
 		if (line[0] == '\n')
 		{
 			free(line);
-			if (has_started)
-				has_ended = 1;
 			continue;
 		}
-
-		if (has_ended)
+		if (!map_started && (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0 ||
+			ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0 ||
+			ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0))
 		{
-			fprintf(stderr, "❌ Erro: Linha encontrada após fim do mapa.\n");
-			exit(EXIT_FAILURE);
+			parse_texture_or_color(cfg, line);
+			free(line);
+			continue;
 		}
-
+		map_started = 1;
 		map[y] = ft_strtrim(line, "\n");
 		free(line);
-
 		for (int x = 0; map[y][x]; x++)
 		{
 			char c = map[y][x];
@@ -77,7 +132,6 @@ void parse_cub_file(const char *path, t_config *cfg)
 				player_found = 1;
 			}
 		}
-		has_started = 1;
 		y++;
 	}
 	map[y] = NULL;

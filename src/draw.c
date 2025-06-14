@@ -6,11 +6,19 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:37:27 by glima             #+#    #+#             */
-/*   Updated: 2025/06/14 17:47:18 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/14 19:18:05 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
+mlx_texture_t *get_wall_texture(t_config *cfg, int side, double rayDirX, double rayDirY)
+{
+	if (side == 0)
+		return (rayDirX < 0) ? cfg->tex_we : cfg->tex_ea;
+	else
+		return (rayDirY < 0) ? cfg->tex_no : cfg->tex_so;
+}
 
 void	render_frame(t_config *cfg)
 {
@@ -66,7 +74,6 @@ void	render_frame(t_config *cfg)
 				side = 1;
 			}
 
-			// Validar limites antes de acessar
 			if (mapY < 0 || mapX < 0 || !cfg->map[mapY] || !cfg->map[mapY][mapX])
 				break;
 
@@ -84,9 +91,42 @@ void	render_frame(t_config *cfg)
 		if (drawStart < 0) drawStart = 0;
 		if (drawEnd >= HEIGHT) drawEnd = HEIGHT - 1;
 
-		uint32_t color = (side == 1) ? 0xAAAAAAFF : 0xFFFFFFFF;
+		// ✳️ Teto
+		for (int y = 0; y < drawStart; y++)
+			mlx_put_pixel(cfg->img, x, y, cfg->ceiling_color);
+
+		// 🧱 Textura da parede
+		mlx_texture_t *tex = NULL;
+		if (side == 0)
+			tex = (rayDirX < 0) ? cfg->tex_we : cfg->tex_ea;
+		else
+			tex = (rayDirY < 0) ? cfg->tex_no : cfg->tex_so;
+
+		if (!tex)
+			continue;
+
+		int tex_width = tex->width;
+		int tex_height = tex->height;
+
+		double wallX = (side == 0)
+			? cfg->player.pos_y + perpWallDist * rayDirY
+			: cfg->player.pos_x + perpWallDist * rayDirX;
+		wallX -= floor(wallX);
+
+		int tex_x = (int)(wallX * tex_width);
+		if ((side == 0 && rayDirX > 0) || (side == 1 && rayDirY < 0))
+			tex_x = tex_width - tex_x - 1;
 
 		for (int y = drawStart; y < drawEnd; y++)
+		{
+			int d = y * 256 - HEIGHT * 128 + lineHeight * 128;
+			int tex_y = ((d * tex_height) / lineHeight) / 256;
+			uint32_t color = get_texture_pixel(tex, tex_x, tex_y);
 			mlx_put_pixel(cfg->img, x, y, color);
+		}
+
+		// 🟫 Piso
+		for (int y = drawEnd; y < HEIGHT; y++)
+			mlx_put_pixel(cfg->img, x, y, cfg->floor_color);
 	}
 }

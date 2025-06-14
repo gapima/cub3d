@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:27:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/14 14:02:54 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/14 19:19:23 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 	init_config(&cfg);
-	parse_cub_file(argv[1], &cfg); 
+	parse_cub_file(argv[1], &cfg);
+	load_textures(&cfg); // ⬅️ ADICIONE AQUI
+
 	mlx_loop_hook(cfg.mlx, &hook, &cfg);
 	mlx_key_hook(cfg.mlx, &handle_input, &cfg);
 	mlx_loop(cfg.mlx);
