@@ -4,7 +4,7 @@
   "C_Cpp_Runner.debuggerPath": "gdb",
   "C_Cpp_Runner.cStandard": "",
   "C_Cpp_Runner.cppStandard": "",
-  "C_Cpp_Runner.msvcBatchPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/Build/vcvarsall.bat",
+  "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.useMsvc": false,
   "C_Cpp_Runner.warnings": [
     "-Wall",
@@ -61,6 +61,7 @@
     "fcntl.h": "c",
     "stdio.h": "c",
     "mlx42.h": "c",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "cub3d.h": "c"
   }
 }
