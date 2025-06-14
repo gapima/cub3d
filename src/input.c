@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:40:42 by glima             #+#    #+#             */
-/*   Updated: 2025/06/14 13:57:43 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/14 14:09:36 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,35 @@ void   handle_input(mlx_key_data_t keydata, void *param)
         p->pos_x -= p->dir_x * MOVE_SPEED;
         p->pos_y -= p->dir_y * MOVE_SPEED;
     }
-    if (keydata.key == MLX_KEY_A || keydata.key == MLX_KEY_D)
+    if (mlx_is_key_down(cfg->mlx, MLX_KEY_A))
     {
-        double old_dir_x = p->dir_x;
-		double old_plane_x = p->plane_x;
-		double rot = (keydata.key == MLX_KEY_D) ? -ROT_SPEED : ROT_SPEED;
+        cfg->player.pos_x -= cfg->player.plane_x * MOVE_SPEED;
+        cfg->player.pos_y -= cfg->player.plane_y * MOVE_SPEED;
+    }
+    if (mlx_is_key_down(cfg->mlx, MLX_KEY_D))
+    {
+        cfg->player.pos_x += cfg->player.plane_x * MOVE_SPEED;
+        cfg->player.pos_y += cfg->player.plane_y * MOVE_SPEED;
+    }
+    if (mlx_is_key_down(cfg->mlx, MLX_KEY_LEFT))
+    {
+        double old_dir_x = cfg->player.dir_x;
+        cfg->player.dir_x = cfg->player.dir_x * cos(-ROT_SPEED) - cfg->player.dir_y * sin(-ROT_SPEED);
+        cfg->player.dir_y = old_dir_x * sin(-ROT_SPEED) + cfg->player.dir_y * cos(-ROT_SPEED);
+    
+        double old_plane_x = cfg->player.plane_x;
+        cfg->player.plane_x = cfg->player.plane_x * cos(-ROT_SPEED) - cfg->player.plane_y * sin(-ROT_SPEED);
+        cfg->player.plane_y = old_plane_x * sin(-ROT_SPEED) + cfg->player.plane_y * cos(-ROT_SPEED);
+    }
+    if (mlx_is_key_down(cfg->mlx, MLX_KEY_RIGHT))
+    {
+        double old_dir_x = cfg->player.dir_x;
+        cfg->player.dir_x = cfg->player.dir_x * cos(ROT_SPEED) - cfg->player.dir_y * sin(ROT_SPEED);
+        cfg->player.dir_y = old_dir_x * sin(ROT_SPEED) + cfg->player.dir_y * cos(ROT_SPEED);
 
-		p->dir_x = p->dir_x * cos(rot) - p->dir_y * sin(rot);
-		p->dir_y = old_dir_x * sin(rot) + p->dir_y * cos(rot);
-
-		p->plane_x = p->plane_x * cos(rot) - p->plane_y * sin(rot);
-		p->plane_y = old_plane_x * sin(rot) + p->plane_y * cos(rot);
+        double old_plane_x = cfg->player.plane_x;
+        cfg->player.plane_x = cfg->player.plane_x * cos(ROT_SPEED) - cfg->player.plane_y * sin(ROT_SPEED);
+        cfg->player.plane_y = old_plane_x * sin(ROT_SPEED) + cfg->player.plane_y * cos(ROT_SPEED);
     }
 }
     
