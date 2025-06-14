@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/14 13:57:30 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/14 17:42:17 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,11 @@
 # define WIDTH 640
 # define HEIGHT 480
 # define MOVE_SPEED 0.5 
-# define ROT_SPEED 0.5 
+# define ROT_SPEED 0.5
+
+# define MAX_MAP_WIDTH 64
+# define MAX_MAP_HEIGHT 64
+
 
 typedef struct s_player {
 	double pos_x;
@@ -44,6 +48,7 @@ typedef struct s_config {
 	mlx_texture_t	*tex_so;
 	mlx_texture_t	*tex_ea;
 	mlx_texture_t	*tex_we;
+	char			**map;
 }	t_config;
 
 
