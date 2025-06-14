@@ -6,32 +6,11 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:31:04 by glima             #+#    #+#             */
-/*   Updated: 2025/06/14 17:46:00 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/14 17:54:48 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parse_map.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/14 13:31:04 by glima             #+#    #+#             */
-/*   Updated: 2025/06/14 19:00:00 by glima            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "cub3d.h"
-#include <fcntl.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-
-#define MAX_MAP_WIDTH 64
-#define MAX_MAP_HEIGHT 64
 
 static int is_valid_map_char(char c)
 {
@@ -50,6 +29,8 @@ void parse_cub_file(const char *path, t_config *cfg)
 	char *line;
 	int y = 0;
 	int player_found = 0;
+	int has_started = 0;
+	int has_ended = 0;
 	char **map = malloc(sizeof(char *) * (MAX_MAP_HEIGHT + 1));
 
 	while ((line = get_next_line(fd)) && y < MAX_MAP_HEIGHT)
@@ -57,7 +38,15 @@ void parse_cub_file(const char *path, t_config *cfg)
 		if (line[0] == '\n')
 		{
 			free(line);
+			if (has_started)
+				has_ended = 1;
 			continue;
+		}
+
+		if (has_ended)
+		{
+			fprintf(stderr, "❌ Erro: Linha encontrada após fim do mapa.\n");
+			exit(EXIT_FAILURE);
 		}
 
 		map[y] = ft_strtrim(line, "\n");
@@ -88,6 +77,7 @@ void parse_cub_file(const char *path, t_config *cfg)
 				player_found = 1;
 			}
 		}
+		has_started = 1;
 		y++;
 	}
 	map[y] = NULL;
