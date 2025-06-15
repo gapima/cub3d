@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:31:04 by glima             #+#    #+#             */
-/*   Updated: 2025/06/15 17:40:03 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/15 18:07:49 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,6 @@ static uint32_t parse_color(char *line)
 	return (r << 24 | g << 16 | b << 8 | 0xFF);
 }
 
-
-
 static void parse_texture_or_color(t_config *cfg, char *line)
 {
 	if (ft_strncmp(line, "NO ", 3) == 0)
@@ -74,6 +72,36 @@ static void parse_texture_or_color(t_config *cfg, char *line)
 	}
 }
 
+static void flood_fill(char **map, int x, int y, int max_x, int max_y)
+{
+	if (x < 0 || y < 0 || y >= max_y || x >= (int)ft_strlen(map[y]) || map[y][x] == '1' || map[y][x] == 'F')
+		return;
+	if (x == 0 || y == 0 || x == max_x - 1 || y == max_y - 1)
+	{
+		fprintf(stderr, "❌ Erro: Flood fill chegou na borda — mapa não fechado.\n");
+		exit(EXIT_FAILURE);
+	}
+	if (map[y][x] == ' ' || map[y][x] == '\0')
+	{
+		fprintf(stderr, "❌ Erro: Mapa não está fechado corretamente.\n");
+		exit(EXIT_FAILURE);
+	}
+	map[y][x] = 'F';
+	flood_fill(map, x + 1, y, max_x, max_y);
+	flood_fill(map, x - 1, y, max_x, max_y);
+	flood_fill(map, x, y + 1, max_x, max_y);
+	flood_fill(map, x, y - 1, max_x, max_y);
+}
+
+static void validate_closed_map(char **map, int x, int y, int map_height, int map_width)
+{
+	char **map_copy = ft_calloc(map_height + 1, sizeof(char *));
+	for (int i = 0; i < map_height; i++)
+		map_copy[i] = ft_strdup(map[i]);
+	flood_fill(map_copy, x, y, map_width, map_height);
+	free_split(map_copy);
+}
+
 void parse_cub_file(const char *path, t_config *cfg)
 {
 	int fd = open(path, O_RDONLY);
@@ -86,7 +114,7 @@ void parse_cub_file(const char *path, t_config *cfg)
 	char *line;
 	int y = 0;
 	int player_found = 0;
-	int map_started = 0;
+	int player_x = -1, player_y = -1;
 	char **map = malloc(sizeof(char *) * (MAX_MAP_HEIGHT + 1));
 
 	while ((line = get_next_line(fd)) && y < MAX_MAP_HEIGHT)
@@ -96,52 +124,67 @@ void parse_cub_file(const char *path, t_config *cfg)
 			free(line);
 			continue;
 		}
-		if (!map_started && (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0 ||
+		if (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0 ||
 			ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0 ||
-			ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0))
+			ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0)
 		{
 			parse_texture_or_color(cfg, line);
 			free(line);
 			continue;
 		}
-		map_started = 1;
-		map[y] = ft_strtrim(line, "\n");
+		map[y++] = ft_strtrim(line, " \n\r");
 		free(line);
-		for (int x = 0; map[y][x]; x++)
-		{
-			char c = map[y][x];
-			if (!is_valid_map_char(c))
-			{
-				fprintf(stderr, "❌ Erro: Caractere inválido no mapa: '%c'\n", c);
-				exit(EXIT_FAILURE);
-			}
-			if (c == 'N')
-			{
-				if (player_found)
-				{
-					fprintf(stderr, "❌ Erro: Mais de uma posição inicial encontrada.\n");
-					exit(EXIT_FAILURE);
-				}
-				cfg->player.pos_x = x + 0.5;
-				cfg->player.pos_y = y + 0.5;
-				cfg->player.dir_x = 0;
-				cfg->player.dir_y = -1;
-				cfg->player.plane_x = 0.66;
-				cfg->player.plane_y = 0;
-				map[y][x] = '0';
-				player_found = 1;
-			}
-		}
-		y++;
 	}
 	map[y] = NULL;
 	close(fd);
 
-	if (!player_found)
-	{
+	int max_width = 0;
+	for (int i = 0; i < y; i++)
+		if ((int)ft_strlen(map[i]) > max_width)
+			max_width = ft_strlen(map[i]);
+
+	for (int i = 0; i < y; i++) {
+		char *padded = ft_calloc(max_width + 1, sizeof(char));
+		int len = ft_strlen(map[i]);
+		ft_memcpy(padded, map[i], len);
+		for (int j = len; j < max_width; j++)
+			padded[j] = ' ';
+		free(map[i]);
+		map[i] = padded;
+	}
+
+	for (int i = 0; i < y; i++) {
+		for (int x = 0; map[i][x]; x++) {
+			if (map[i][x] == 'N') {
+				if (player_found) {
+					fprintf(stderr, "❌ Erro: Mais de uma posição inicial encontrada.\n");
+					exit(EXIT_FAILURE);
+				}
+				player_found = 1;
+				player_x = x;
+				player_y = i;
+			}
+			if (!is_valid_map_char(map[i][x]) && map[i][x] != ' ') {
+				fprintf(stderr, "❌ Erro: Caractere inválido no mapa: '%c'\n", map[i][x]);
+				exit(EXIT_FAILURE);
+			}
+		}
+	}
+
+	if (!player_found) {
 		fprintf(stderr, "❌ Erro: Nenhuma posição inicial do jogador encontrada.\n");
 		exit(EXIT_FAILURE);
 	}
+
+	validate_closed_map(map, player_x, player_y, y, max_width);
+
+	cfg->player.pos_x = player_x + 0.5;
+	cfg->player.pos_y = player_y + 0.5;
+	cfg->player.dir_x = 0;
+	cfg->player.dir_y = -1;
+	cfg->player.plane_x = 0.66;
+	cfg->player.plane_y = 0;
+	map[player_y][player_x] = '0';
 
 	cfg->map = map;
 }
