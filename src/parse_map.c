@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:31:04 by glima             #+#    #+#             */
-/*   Updated: 2025/06/15 18:07:49 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/15 18:24:49 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ static int is_valid_map_char(char c)
 static int parse_color_component(char *str)
 {
 	int value = ft_atoi(str);
-	if (value < 0 || value > 255)
-	{
-		fprintf(stderr, "❌ Erro: Componente de cor fora do intervalo (0-255): %s\n", str);
-		exit(EXIT_FAILURE);
-	}
+	// if (value < 0 || value > 255)
+	// {
+	// 	fprintf(stderr, "❌ Erro: Componente de cor fora do intervalo (0-255): %s\n", str);
+	// 	exit(EXIT_FAILURE);
+	// }
 	return value;
 }
 
