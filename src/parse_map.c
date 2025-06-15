@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:31:04 by glima             #+#    #+#             */
-/*   Updated: 2025/06/14 19:11:59 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/15 17:40:03 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,13 @@ static uint32_t parse_color(char *line)
 static void parse_texture_or_color(t_config *cfg, char *line)
 {
 	if (ft_strncmp(line, "NO ", 3) == 0)
-		cfg->no_path = ft_strdup(line + 3);
+		cfg->no_path = ft_strtrim(line + 3, " \n\r");
 	else if (ft_strncmp(line, "SO ", 3) == 0)
-		cfg->so_path = ft_strdup(line + 3);
+		cfg->so_path = ft_strtrim(line + 3, " \n\r");
 	else if (ft_strncmp(line, "WE ", 3) == 0)
-		cfg->we_path = ft_strdup(line + 3);
+		cfg->we_path = ft_strtrim(line + 3, " \n\r");
 	else if (ft_strncmp(line, "EA ", 3) == 0)
-		cfg->ea_path = ft_strdup(line + 3);
+		cfg->ea_path = ft_strtrim(line + 3, " \n\r");
 	else if (ft_strncmp(line, "F ", 2) == 0)
 		cfg->floor_color = parse_color(line + 2);
 	else if (ft_strncmp(line, "C ", 2) == 0)

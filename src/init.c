@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:26:33 by glima             #+#    #+#             */
-/*   Updated: 2025/06/14 19:23:46 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/15 17:40:56 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ void	init_config(t_config *cfg)
 
 void	load_textures(t_config *cfg)
 {
-	printf("aqui: %s\n", cfg->no_path);
-	cfg->tex_no = mlx_load_png("./textures/redbrick.png");
-	cfg->tex_so = mlx_load_png("./textures/redbrick.png");
-	cfg->tex_we = mlx_load_png("./textures/redbrick.png");
-	cfg->tex_ea = mlx_load_png("./textures/redbrick.png");
+	printf("N%sN\n", cfg->no_path);
+	cfg->tex_no = mlx_load_png(cfg->no_path);
+	cfg->tex_so = mlx_load_png(cfg->so_path);
+	cfg->tex_we = mlx_load_png(cfg->we_path);
+	cfg->tex_ea = mlx_load_png(cfg->ea_path);
 
 	if (!cfg->tex_no || !cfg->tex_so || !cfg->tex_we || !cfg->tex_ea)
 	{
