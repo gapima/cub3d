@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 16:42:53 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/16 16:46:49 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ typedef struct s_config {
 }	t_config;
 
 // Core
-void	init_config(t_config *cfg);
+bool    init_config(t_config *cfg);
 bool parse_cub_file(const char *path, t_config *cfg);
 void	render_frame(t_config *cfg);
 void	handle_input(mlx_key_data_t keydata, void *param);
