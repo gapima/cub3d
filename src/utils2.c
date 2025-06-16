@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 18:47:12 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 18:48:29 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/16 19:44:23 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,20 @@ char **read_cub_file(const char *path, t_config *cfg, int *out_height)
 	while (line && *out_height < MAX_MAP_HEIGHT)
 	{
 		if (!process_line(cfg, line, map, out_height, fd))
-			return (NULL);
+		{
+				int i = 0;
+
+				while (i < *out_height)
+						free(map[i++]);
+				free(map);
+				close(fd);
+				free(line);
+				return (NULL);
+		}
 		line = get_next_line(fd);
 	}
+	if (line)
+			free(line);
 	map[*out_height] = NULL;
 	close(fd);
 	return (map);
