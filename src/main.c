@@ -39,7 +39,11 @@ int	main(int argc, char **argv)
 
 	if (argc != 2)
 		show_usage();
-	init_config(&cfg);
+	if (!init_config(&cfg))
+	{
+		fprintf(stderr, "Erro ao inicializar a configuração.\n");
+		return (EXIT_FAILURE);
+	}
 	if (!parse_cub_file(argv[1], &cfg))
 		cleanup_and_exit(&cfg, "Erro ao analisar o arquivo .cub\n");
 	if (!load_textures(&cfg))
