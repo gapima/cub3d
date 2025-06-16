@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 18:49:22 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/16 19:05:34 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,34 @@ typedef struct s_config {
 	uint32_t		floor_color;
 	uint32_t		ceiling_color;
 }	t_config;
+
+typedef struct s_ray
+{
+	int		x;
+	double	cameraX;
+	double	rayDirX;
+	double	rayDirY;
+	double	perpWallDist;
+	int		lineHeight;
+	int		drawStart;
+	int		drawEnd;
+}	t_ray;
+
+typedef struct s_dda
+{
+	int		mapX;
+	int		mapY;
+	double	deltaDistX;
+	double	deltaDistY;
+	double	sideDistX;
+	double	sideDistY;
+	int		stepX;
+	int		stepY;
+	int		hit;
+	int		side;
+}	t_dda;
+
+
 
 // Core
 bool    init_config(t_config *cfg);

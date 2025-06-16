@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:37:27 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 18:56:06 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/16 19:06:37 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,24 @@ static void draw_ceiling_and_floor(t_config *cfg, int x, int drawStart, int draw
 	}
 }
 
+static double compute_wall_hit_point(t_config *cfg, double perpWallDist, double rayDirX, double rayDirY, int side)
+{
+	if (side == 0)
+		return (cfg->player.pos_y + perpWallDist * rayDirY);
+	else
+		return (cfg->player.pos_x + perpWallDist * rayDirX);
+}
+
+static int compute_tex_x(double wallX, int tex_width, double rayDirX, double rayDirY, int side)
+{
+	int tex_x;
+
+	tex_x = (int)(wallX * tex_width);
+	if ((side == 0 && rayDirX > 0) || (side == 1 && rayDirY < 0))
+		tex_x = tex_width - tex_x - 1;
+	return (tex_x);
+}
+
 static void draw_wall_slice(t_config *cfg, int x, int drawStart, int drawEnd, int lineHeight, double rayDirX, double rayDirY, double perpWallDist, int side)
 {
 	mlx_texture_t *tex;
@@ -52,19 +70,13 @@ static void draw_wall_slice(t_config *cfg, int x, int drawStart, int drawEnd, in
 	tex = get_wall_texture(cfg, side, rayDirX, rayDirY);
 	if (!tex)
 		return;
-
 	tex_width = tex->width;
 	tex_height = tex->height;
 
-	if (side == 0)
-		wallX = cfg->player.pos_y + perpWallDist * rayDirY;
-	else
-		wallX = cfg->player.pos_x + perpWallDist * rayDirX;
+	wallX = compute_wall_hit_point(cfg, perpWallDist, rayDirX, rayDirY, side);
 	wallX -= floor(wallX);
+	tex_x = compute_tex_x(wallX, tex_width, rayDirX, rayDirY, side);
 
-	tex_x = (int)(wallX * tex_width);
-	if ((side == 0 && rayDirX > 0) || (side == 1 && rayDirY < 0))
-		tex_x = tex_width - tex_x - 1;
 	y = drawStart;
 	while (y < drawEnd)
 	{
@@ -76,90 +88,100 @@ static void draw_wall_slice(t_config *cfg, int x, int drawStart, int drawEnd, in
 	}
 }
 
-void render_frame(t_config *cfg)
-{
-	int x;
-	double cameraX;
-	double rayDirX;
-	double rayDirY;
-	int mapX;
-	int mapY;
-	double deltaDistX;
-	double deltaDistY;
-	double sideDistX;
-	double sideDistY;
-	int stepX;
-	int stepY;
-	int hit;
-	int side;
-	double perpWallDist;
-	int lineHeight;
-	int drawStart;
-	int drawEnd;
 
-	x = 0;
-	while (x < WIDTH)
+static void	init_ray(t_config *cfg, t_ray *ray)
+{
+	ray->cameraX = 2 * ray->x / (double)WIDTH - 1;
+	ray->rayDirX = cfg->player.dir_x + cfg->player.plane_x * ray->cameraX;
+	ray->rayDirY = cfg->player.dir_y + cfg->player.plane_y * ray->cameraX;
+}
+
+static void	init_dda(t_config *cfg, t_ray *ray, t_dda *dda)
+{
+	dda->mapX = (int)cfg->player.pos_x;
+	dda->mapY = (int)cfg->player.pos_y;
+	dda->deltaDistX = fabs(1.0 / ray->rayDirX);
+	dda->deltaDistY = fabs(1.0 / ray->rayDirY);
+
+	if (ray->rayDirX < 0)
 	{
-		cameraX = 2 * x / (double)WIDTH - 1;
-		rayDirX = cfg->player.dir_x + cfg->player.plane_x * cameraX;
-		rayDirY = cfg->player.dir_y + cfg->player.plane_y * cameraX;
-		mapX = (int)cfg->player.pos_x;
-		mapY = (int)cfg->player.pos_y;
-		deltaDistX = fabs(1 / rayDirX);
-		deltaDistY = fabs(1 / rayDirY);
-		hit = 0;
-		if (rayDirX < 0)
+		dda->stepX = -1;
+		dda->sideDistX = (cfg->player.pos_x - dda->mapX) * dda->deltaDistX;
+	}
+	else
+	{
+		dda->stepX = 1;
+		dda->sideDistX = (dda->mapX + 1.0 - cfg->player.pos_x) * dda->deltaDistX;
+	}
+	if (ray->rayDirY < 0)
+	{
+		dda->stepY = -1;
+		dda->sideDistY = (cfg->player.pos_y - dda->mapY) * dda->deltaDistY;
+	}
+	else
+	{
+		dda->stepY = 1;
+		dda->sideDistY = (dda->mapY + 1.0 - cfg->player.pos_y) * dda->deltaDistY;
+	}
+	dda->hit = 0;
+}
+
+static void	perform_dda(t_config *cfg, t_dda *dda)
+{
+	while (!dda->hit)
+	{
+		if (dda->sideDistX < dda->sideDistY)
 		{
-			stepX = -1;
-			sideDistX = (cfg->player.pos_x - mapX) * deltaDistX;
+			dda->sideDistX += dda->deltaDistX;
+			dda->mapX += dda->stepX;
+			dda->side = 0;
 		}
 		else
 		{
-			stepX = 1;
-			sideDistX = (mapX + 1.0 - cfg->player.pos_x) * deltaDistX;
+			dda->sideDistY += dda->deltaDistY;
+			dda->mapY += dda->stepY;
+			dda->side = 1;
 		}
-		if (rayDirY < 0)
-		{
-			stepY = -1;
-			sideDistY = (cfg->player.pos_y - mapY) * deltaDistY;
-		}
-		else
-		{
-			stepY = 1;
-			sideDistY = (mapY + 1.0 - cfg->player.pos_y) * deltaDistY;
-		}
-		while (hit == 0)
-		{
-			if (sideDistX < sideDistY)
-			{
-				sideDistX += deltaDistX;
-				mapX += stepX;
-				side = 0;
-			}
-			else
-			{
-				sideDistY += deltaDistY;
-				mapY += stepY;
-				side = 1;
-			}
-			if (mapY < 0 || mapX < 0 || !cfg->map[mapY] || !cfg->map[mapY][mapX])
-				break;
-			if (cfg->map[mapY][mapX] == '1')
-				hit = 1;
-		}
-		if (side == 0)
-			perpWallDist = (mapX - cfg->player.pos_x + (1 - stepX) / 2) / rayDirX;
-		else
-			perpWallDist = (mapY - cfg->player.pos_y + (1 - stepY) / 2) / rayDirY;
-		lineHeight = (int)(HEIGHT / perpWallDist);
-		drawStart = -lineHeight / 2 + HEIGHT / 2;
-		drawEnd = lineHeight / 2 + HEIGHT / 2;
-		if (drawStart < 0)
-			drawStart = 0;
-		if (drawEnd >= HEIGHT)
-			drawEnd = HEIGHT - 1;
-		draw_ceiling_and_floor(cfg, x, drawStart, drawEnd);
-		draw_wall_slice(cfg, x, drawStart, drawEnd, lineHeight, rayDirX, rayDirY, perpWallDist, side);
-		x++;
+		if (dda->mapX < 0 || dda->mapY < 0
+			|| !cfg->map[dda->mapY] || !cfg->map[dda->mapY][dda->mapX])
+			break;
+		if (cfg->map[dda->mapY][dda->mapX] == '1')
+			dda->hit = 1;
+	}
+}
+
+static void	calc_projection(t_config *cfg, t_ray *ray, t_dda *dda)
+{
+	if (dda->side == 0)
+		ray->perpWallDist = (dda->mapX - cfg->player.pos_x + (1 - dda->stepX) / 2.0) / ray->rayDirX;
+	else
+		ray->perpWallDist = (dda->mapY - cfg->player.pos_y + (1 - dda->stepY) / 2.0) / ray->rayDirY;
+
+	ray->lineHeight = (int)(HEIGHT / ray->perpWallDist);
+	ray->drawStart = -ray->lineHeight / 2 + HEIGHT / 2;
+	if (ray->drawStart < 0)
+		ray->drawStart = 0;
+	ray->drawEnd = ray->lineHeight / 2 + HEIGHT / 2;
+	if (ray->drawEnd >= HEIGHT)
+		ray->drawEnd = HEIGHT - 1;
+}
+
+void	render_frame(t_config *cfg)
+{
+	t_ray	ray;
+	t_dda	dda;
+
+	ray.x = 0;
+	while (ray.x < WIDTH)
+	{
+		init_ray(cfg, &ray);
+		init_dda(cfg, &ray, &dda);
+		perform_dda(cfg, &dda);
+		calc_projection(cfg, &ray, &dda);
+		draw_ceiling_and_floor(cfg, ray.x, ray.drawStart, ray.drawEnd);
+		draw_wall_slice(cfg, ray.x, ray.drawStart, ray.drawEnd,
+			ray.lineHeight, ray.rayDirX, ray.rayDirY,
+			ray.perpWallDist, dda.side);
+		ray.x++;
 	}
 }
