@@ -98,10 +98,16 @@ bool parse_cub_file(const char *path, t_config *cfg)
 	char **map;
 	int height;
 
-	map = read_cub_file(path, cfg, &height);
-	if (!map)
-		return (false);
-	if (!validate_and_prepare_map(map, height, cfg))
-		return (false);
-	return (true);
+    map = read_cub_file(path, cfg, &height);
+    if (!map)
+    {
+            free_map(map, height);
+            return (false);
+    }
+    if (!validate_and_prepare_map(map, height, cfg))
+    {
+            free_map(map, height);
+            return (false);
+    }
+    return (true);
 }
