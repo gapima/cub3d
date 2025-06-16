@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 15:51:00 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/16 16:42:53 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,17 @@ typedef struct s_config {
 
 // Core
 void	init_config(t_config *cfg);
-void	parse_cub_file(const char *path, t_config *cfg);
+bool parse_cub_file(const char *path, t_config *cfg);
 void	render_frame(t_config *cfg);
 void	handle_input(mlx_key_data_t keydata, void *param);
 void	hook(void *param);
-void	load_textures(t_config *cfg);
+bool load_textures(t_config *cfg);
 mlx_texture_t *get_wall_texture(t_config *cfg, int side, double rayDirX, double rayDirY);
+void set_player_direction(t_config *cfg, char dir);
 
 // Validação
 void	validate_closed_map(char **map, int height, int width);
 // Utils
 uint32_t get_texture_pixel(mlx_texture_t *tex, int x, int y);
-
+void	free_config(t_config *cfg);
 #endif

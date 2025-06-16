@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:26:33 by glima             #+#    #+#             */
-/*   Updated: 2025/06/15 17:40:56 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/16 16:40:49 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,8 @@ void	init_config(t_config *cfg)
 	cfg->ceiling_color = 0xAAAAAAFF; // cinza claro
 }
 
-void	load_textures(t_config *cfg)
+bool	load_textures(t_config *cfg)
 {
-	printf("N%sN\n", cfg->no_path);
 	cfg->tex_no = mlx_load_png(cfg->no_path);
 	cfg->tex_so = mlx_load_png(cfg->so_path);
 	cfg->tex_we = mlx_load_png(cfg->we_path);
@@ -55,10 +54,15 @@ void	load_textures(t_config *cfg)
 	if (!cfg->tex_no || !cfg->tex_so || !cfg->tex_we || !cfg->tex_ea)
 	{
 		fprintf(stderr, "❌ Erro ao carregar texturas:\n");
-		if (!cfg->tex_no) fprintf(stderr, "- Norte (NO): %s\n", cfg->no_path);
-		if (!cfg->tex_so) fprintf(stderr, "- Sul   (SO): %s\n", cfg->so_path);
-		if (!cfg->tex_we) fprintf(stderr, "- Oeste (WE): %s\n", cfg->we_path);
-		if (!cfg->tex_ea) fprintf(stderr, "- Leste (EA): %s\n", cfg->ea_path);
-		exit(EXIT_FAILURE);
+		if (!cfg->tex_no)
+			fprintf(stderr, "- Norte (NO): %s\n", cfg->no_path);
+		if (!cfg->tex_so)
+			fprintf(stderr, "- Sul   (SO): %s\n", cfg->so_path);
+		if (!cfg->tex_we)
+			fprintf(stderr, "- Oeste (WE): %s\n", cfg->we_path);
+		if (!cfg->tex_ea)
+			fprintf(stderr, "- Leste (EA): %s\n", cfg->ea_path);
+		return false;
 	}
+	return true;
 }

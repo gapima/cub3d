@@ -72,52 +72,52 @@ static void parse_texture_or_color(t_config *cfg, char *line)
 	}
 }
 
-void parse_cub_file(const char *path, t_config *cfg)
+bool parse_cub_file(const char *path, t_config *cfg)
 {
-	int fd = open(path, O_RDONLY);
+	int		fd = open(path, O_RDONLY);
+	char	*line;
+	char	**map;
+	int		y = 0, player_found = 0;
+	int		player_x = -1, player_y = -1;
+	int		max_width = 0;
+
 	if (fd < 0)
-	{
-		perror("Erro ao abrir o arquivo .cub");
-		exit(EXIT_FAILURE);
-	}
-
-	char *line;
-	int y = 0;
-	int player_found = 0;
-	int player_x = -1, player_y = -1;
-	char **map = malloc(sizeof(char *) * (MAX_MAP_HEIGHT + 1));
-
+		return (perror("Erro ao abrir o arquivo .cub"), false);
+	map = malloc(sizeof(char *) * (MAX_MAP_HEIGHT + 1));
+	if (!map)
+		return (close(fd), false);
 	while ((line = get_next_line(fd)) && y < MAX_MAP_HEIGHT)
 	{
-		if (line[0] == '\n')
-		{
+		if (line[0] == '\n' || line[0] == '\0')
 			free(line);
-			continue;
-		}
-		if (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0 ||
-			ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0 ||
-			ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0)
+		else if (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0 ||
+				 ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0 ||
+				 ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0)
 		{
 			parse_texture_or_color(cfg, line);
 			free(line);
-			continue;
 		}
-		char *newline = ft_strchr(line, '\n');
-		if (newline)
-			*newline = '\0';
-		map[y++] = ft_strdup(line);
-		free(line);
+		else
+		{
+			char *newline = ft_strchr(line, '\n');
+			if (newline)
+				*newline = '\0';
+			map[y++] = ft_strdup(line);
+			free(line);
+		}
 	}
 	map[y] = NULL;
 	close(fd);
 
-	int max_width = 0;
 	for (int i = 0; i < y; i++)
 		if ((int)ft_strlen(map[i]) > max_width)
 			max_width = ft_strlen(map[i]);
 
-	for (int i = 0; i < y; i++) {
+	for (int i = 0; i < y; i++)
+	{
 		char *padded = ft_calloc(max_width + 1, sizeof(char));
+		if (!padded)
+			return false;
 		int len = ft_strlen(map[i]);
 		ft_memcpy(padded, map[i], len);
 		for (int j = len; j < max_width; j++)
@@ -126,57 +126,31 @@ void parse_cub_file(const char *path, t_config *cfg)
 		map[i] = padded;
 	}
 
-	for (int i = 0; i < y; i++) {
-		for (int x = 0; map[i][x]; x++) {
-			if (map[i][x] == 'N' || map[i][x] == 'S' || map[i][x] == 'E' || map[i][x] == 'W') {
-				if (player_found) {
-					fprintf(stderr, "❌ Erro: Mais de uma posição inicial encontrada.\n");
-					exit(EXIT_FAILURE);
-				}
+	for (int i = 0; i < y; i++)
+	{
+		for (int x = 0; map[i][x]; x++)
+		{
+			if (ft_strchr("NSEW", map[i][x]))
+			{
+				if (player_found)
+					return (fprintf(stderr, "❌ Erro: Mais de uma posição inicial.\n"), false);
 				player_found = 1;
 				player_x = x;
 				player_y = i;
-
-				if (map[i][x] == 'N') {
-					cfg->player.dir_x = 0;
-					cfg->player.dir_y = -1;
-					cfg->player.plane_x = 0.66;
-					cfg->player.plane_y = 0;
-				}
-				else if (map[i][x] == 'S') {
-					cfg->player.dir_x = 0;
-					cfg->player.dir_y = 1;
-					cfg->player.plane_x = -0.66;
-					cfg->player.plane_y = 0;
-				}
-				else if (map[i][x] == 'E') {
-					cfg->player.dir_x = 1;
-					cfg->player.dir_y = 0;
-					cfg->player.plane_x = 0;
-					cfg->player.plane_y = 0.66;
-				}
-				else if (map[i][x] == 'W') {
-					cfg->player.dir_x = -1;
-					cfg->player.dir_y = 0;
-					cfg->player.plane_x = 0;
-					cfg->player.plane_y = -0.66;
-				}
+				set_player_direction(cfg, map[i][x]);
 			}
-			if (!is_valid_map_char(map[i][x]) && map[i][x] != ' ') {
-				fprintf(stderr, "❌ Erro: Caractere inválido no mapa: '%c'\n", map[i][x]);
-				exit(EXIT_FAILURE);
-			}
+			if (!is_valid_map_char(map[i][x]) && map[i][x] != ' ')
+				return (fprintf(stderr, "❌ Caractere inválido: '%c'\n", map[i][x]), false);
 		}
 	}
 
-	if (!player_found) {
-		fprintf(stderr, "❌ Erro: Nenhuma posição inicial do jogador encontrada.\n");
-		exit(EXIT_FAILURE);
-	}
+	if (!player_found)
+		return (fprintf(stderr, "❌ Erro: Nenhuma posição inicial do jogador.\n"), false);
 
 	validate_closed_map(map, y, max_width);
 	cfg->player.pos_x = player_x + 0.5;
 	cfg->player.pos_y = player_y + 0.5;
 	map[player_y][player_x] = '0';
 	cfg->map = map;
+	return true;
 }
