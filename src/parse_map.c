@@ -24,7 +24,7 @@ static int parse_color_component(char *str)
 	value = ft_atoi(str);
 	if (value < 0 || value > 255)
 	{
-		ft_putstr_fd("❌ Erro: Componente de cor fora do intervalo (0-255): ", 2);
+		ft_putstr_fd("\u274c Erro: Componente de cor fora do intervalo (0-255): ", 2);
 		ft_putstr_fd(str, 2);
 		ft_putchar_fd('\n', 2);
 		exit(EXIT_FAILURE);
@@ -51,7 +51,7 @@ static uint32_t parse_color(char *line)
 	components = ft_split(line, ',');
 	if (!components || !components[0] || !components[1] || !components[2])
 	{
-		ft_putstr_fd("❌ Erro: Formato de cor inválido: ", 2);
+		ft_putstr_fd("\u274c Erro: Formato de cor inválido: ", 2);
 		ft_putstr_fd(line, 2);
 		ft_putchar_fd('\n', 2);
 		exit(EXIT_FAILURE);
@@ -79,53 +79,38 @@ static void parse_texture_or_color(t_config *cfg, char *line)
 		cfg->ceiling_color = parse_color(line + 2);
 	else
 	{
-		ft_putstr_fd("❌ Erro: Linha inválida: ", 2);
+		ft_putstr_fd("\u274c Erro: Linha inválida: ", 2);
 		ft_putstr_fd(line, 2);
 		ft_putchar_fd('\n', 2);
 		exit(EXIT_FAILURE);
 	}
 }
 
-bool parse_cub_file(const char *path, t_config *cfg)
+static char **read_cub_file(const char *path, t_config *cfg, int *out_height)
 {
 	int fd;
 	char *line;
 	char **map;
-	int y;
-	int player_found;
-	int player_x;
-	int player_y;
-	int max_width;
-	int i;
-	int j;
-	int len;
 	char *newline;
-	char *padded;
 
 	fd = open(path, O_RDONLY);
-	line = NULL;
-	map = NULL;
-	y = 0;
-	player_found = 0;
-	player_x = -1;
-	player_y = -1;
-	max_width = 0;
-
 	if (fd < 0)
 	{
 		ft_putstr_fd("Erro ao abrir o arquivo .cub\n", 2);
-		return (false);
+		return (NULL);
 	}
 	map = malloc(sizeof(char *) * (MAX_MAP_HEIGHT + 1));
 	if (!map)
-		return (close(fd), false);
-	while ((line = get_next_line(fd)) && y < MAX_MAP_HEIGHT)
+		return (close(fd), NULL);
+	*out_height = 0;
+	line = get_next_line(fd);
+	while (line && *out_height < MAX_MAP_HEIGHT)
 	{
 		if (line[0] == '\n' || line[0] == '\0')
 			free(line);
-		else if (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0 ||
-				ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0 ||
-				ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0)
+		else if (ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0
+			|| ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0
+			|| ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0)
 		{
 			parse_texture_or_color(cfg, line);
 			free(line);
@@ -135,17 +120,33 @@ bool parse_cub_file(const char *path, t_config *cfg)
 			newline = ft_strchr(line, '\n');
 			if (newline)
 				*newline = '\0';
-			map[y] = ft_strdup(line);
-			if (!map[y])
-				return (close(fd), false);
-			y++;
+			map[*out_height] = ft_strdup(line);
+			if (!map[*out_height])
+				return (close(fd), NULL);
+			(*out_height)++;
 			free(line);
 		}
+		line = get_next_line(fd);
 	}
-	map[y] = NULL;
+	map[*out_height] = NULL;
 	close(fd);
+	return (map);
+}
+
+static bool validate_and_prepare_map(char **map, int height, t_config *cfg)
+{
+	int i;
+	int j;
+	int len;
+	int max_width;
+	char *padded;
+	int player_found;
+	int player_x;
+	int player_y;
+
+	max_width = 0;
 	i = 0;
-	while (i < y)
+	while (i < height)
 	{
 		len = ft_strlen(map[i]);
 		if (len > max_width)
@@ -153,7 +154,7 @@ bool parse_cub_file(const char *path, t_config *cfg)
 		i++;
 	}
 	i = 0;
-	while (i < y)
+	while (i < height)
 	{
 		padded = ft_calloc(max_width + 1, sizeof(char));
 		if (!padded)
@@ -162,16 +163,16 @@ bool parse_cub_file(const char *path, t_config *cfg)
 		ft_memcpy(padded, map[i], len);
 		j = len;
 		while (j < max_width)
-		{
-			padded[j] = ' ';
-			j++;
-		}
+			padded[j++] = ' ';
 		free(map[i]);
 		map[i] = padded;
 		i++;
 	}
+	player_found = 0;
+	player_x = -1;
+	player_y = -1;
 	i = 0;
-	while (i < y)
+	while (i < height)
 	{
 		j = 0;
 		while (map[i][j])
@@ -180,7 +181,7 @@ bool parse_cub_file(const char *path, t_config *cfg)
 			{
 				if (player_found)
 				{
-					ft_putstr_fd("❌ Erro: Mais de uma posição inicial.\n", 2);
+					ft_putstr_fd("\u274c Erro: Mais de uma posição inicial.\n", 2);
 					return (false);
 				}
 				player_found = 1;
@@ -190,7 +191,7 @@ bool parse_cub_file(const char *path, t_config *cfg)
 			}
 			if (!is_valid_map_char(map[i][j]) && map[i][j] != ' ')
 			{
-				ft_putstr_fd("❌ Caractere inválido: ", 2);
+				ft_putstr_fd("\u274c Caractere inválido: ", 2);
 				ft_putchar_fd(map[i][j], 2);
 				ft_putchar_fd('\n', 2);
 				return (false);
@@ -201,13 +202,26 @@ bool parse_cub_file(const char *path, t_config *cfg)
 	}
 	if (!player_found)
 	{
-		ft_putstr_fd("❌ Erro: Nenhuma posição inicial do jogador.\n", 2);
+		ft_putstr_fd("\u274c Erro: Nenhuma posição inicial do jogador.\n", 2);
 		return (false);
 	}
-	validate_closed_map(map, y, max_width);
+	validate_closed_map(map, height, max_width);
 	cfg->player.pos_x = player_x + 0.5;
 	cfg->player.pos_y = player_y + 0.5;
 	map[player_y][player_x] = '0';
 	cfg->map = map;
+	return (true);
+}
+
+bool parse_cub_file(const char *path, t_config *cfg)
+{
+	char **map;
+	int height;
+
+	map = read_cub_file(path, cfg, &height);
+	if (!map)
+		return (false);
+	if (!validate_and_prepare_map(map, height, cfg))
+		return (false);
 	return (true);
 }
