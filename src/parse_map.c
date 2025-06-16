@@ -204,6 +204,36 @@ static bool pad_map_lines(char **map, int height, int max_width)
 	return (true);
 }
 
+static bool check_and_set_player(char c, int x, int y, int *found, t_config *cfg, int *px, int *py)
+{
+	if (ft_strchr("NSEW", c))
+	{
+		if (*found)
+		{
+			ft_putstr_fd("❌ Erro: Mais de uma posição inicial.\n", 2);
+			return (false);
+		}
+		*found = 1;
+		*px = x;
+		*py = y;
+		set_player_direction(cfg, c);
+	}
+	return (true);
+}
+
+
+static bool is_valid_or_report_error(char c)
+{
+	if (!is_valid_map_char(c) && c != ' ')
+	{
+		ft_putstr_fd("❌ Caractere inválido: ", 2);
+		ft_putchar_fd(c, 2);
+		ft_putchar_fd('\n', 2);
+		return (false);
+	}
+	return (true);
+}
+
 static bool validate_player_and_chars(char **map, int height, t_config *cfg, int *px, int *py)
 {
 	int i;
@@ -217,22 +247,10 @@ static bool validate_player_and_chars(char **map, int height, t_config *cfg, int
 		j = 0;
 		while (map[i][j])
 		{
-			if (ft_strchr("NSEW", map[i][j]))
-			{
-				if (found)
-					return (ft_putstr_fd("❌ Erro: Mais de uma posição inicial.\n", 2), false);
-				found = 1;
-				*px = j;
-				*py = i;
-				set_player_direction(cfg, map[i][j]);
-			}
-			if (!is_valid_map_char(map[i][j]) && map[i][j] != ' ')
-			{
-				ft_putstr_fd("❌ Caractere inválido: ", 2);
-				ft_putchar_fd(map[i][j], 2);
-				ft_putchar_fd('\n', 2);
+			if (!check_and_set_player(map[i][j], j, i, &found, cfg, px, py))
 				return (false);
-			}
+			if (!is_valid_or_report_error(map[i][j]))
+				return (false);
 			j++;
 		}
 		i++;
@@ -244,6 +262,7 @@ static bool validate_player_and_chars(char **map, int height, t_config *cfg, int
 	}
 	return (true);
 }
+
 
 static bool validate_and_prepare_map(char **map, int height, t_config *cfg)
 {
