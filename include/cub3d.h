@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 16:46:49 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/16 18:49:22 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,19 @@ void	validate_closed_map(char **map, int height, int width);
 // Utils
 uint32_t get_texture_pixel(mlx_texture_t *tex, int x, int y);
 void	free_config(t_config *cfg);
+uint32_t parse_color(char *line);
+void free_split(char **split);
+void parse_texture_or_color(t_config *cfg, char *line);
+bool is_map_line(char *line);
+bool handle_texture_line(t_config *cfg, char *line);
+bool handle_map_line(char **map, char *line, int *y, int fd);
+bool process_line(t_config *cfg, char *line, char **map, int *y, int fd);
+int is_valid_map_char(char c);
+int parse_color_component(char *str);
+char **read_cub_file(const char *path, t_config *cfg, int *out_height);
+int get_max_width(char **map, int height);
+bool pad_map_lines(char **map, int height, int max_width);
+
+
+
 #endif

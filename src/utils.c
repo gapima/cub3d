@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 19:15:41 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 16:43:05 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/16 18:45:14 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,37 @@ void	free_config(t_config *cfg)
 
 	if (cfg->img)
 		mlx_delete_image(cfg->mlx, cfg->img);
+}
+
+uint32_t parse_color(char *line)
+{
+	char **components;
+	int r;
+	int g;
+	int b;
+
+	components = ft_split(line, ',');
+	if (!components || !components[0] || !components[1] || !components[2])
+	{
+		ft_putstr_fd("\u274c Erro: Formato de cor inválido: ", 2);
+		ft_putstr_fd(line, 2);
+		ft_putchar_fd('\n', 2);
+		exit(EXIT_FAILURE);
+	}
+	r = parse_color_component(components[0]);
+	g = parse_color_component(components[1]);
+	b = parse_color_component(components[2]);
+	free_split(components);
+	return ((r << 24) | (g << 16) | (b << 8) | 0xFF);
+}
+
+void free_split(char **split)
+{
+	int i;
+	i = 0;
+	while (split && split[i])
+		free(split[i++]);
+	free(split);
 }
 
 void set_player_direction(t_config *cfg, char dir)
