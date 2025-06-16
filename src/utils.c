@@ -104,9 +104,21 @@ void set_player_direction(t_config *cfg, char dir)
 		cfg->player.dir_x = 1;
 		cfg->player.plane_y = 0.66;
 	}
-	else if (dir == 'W')
-	{
-		cfg->player.dir_x = -1;
-		cfg->player.plane_y = -0.66;
-	}
+        else if (dir == 'W')
+        {
+                cfg->player.dir_x = -1;
+                cfg->player.plane_y = -0.66;
+        }
+}
+
+void    free_map(char **map, int height)
+{
+        int i;
+
+        if (!map)
+                return ;
+        i = 0;
+        while (i < height && map[i])
+                free(map[i++]);
+        free(map);
 }

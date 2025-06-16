@@ -37,6 +37,7 @@ char **read_cub_file(const char *path, t_config *cfg, int *out_height)
 	int		fd;
 	char	*line;
 	char	**map;
+        *out_height = 0;
 
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
@@ -47,12 +48,15 @@ char **read_cub_file(const char *path, t_config *cfg, int *out_height)
 	map = malloc(sizeof(char *) * (MAX_MAP_HEIGHT + 1));
 	if (!map)
 		return (close(fd), NULL);
-	*out_height = 0;
 	line = get_next_line(fd);
 	while (line && *out_height < MAX_MAP_HEIGHT)
 	{
-		if (!process_line(cfg, line, map, out_height, fd))
-			return (NULL);
+                if (!process_line(cfg, line, map, out_height, fd))
+                {
+                        free_map(map, *out_height);
+                        close(fd);
+                        return (NULL);
+                }
 		line = get_next_line(fd);
 	}
 	map[*out_height] = NULL;

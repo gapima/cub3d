@@ -103,6 +103,7 @@ void	validate_closed_map(char **map, int height, int width);
 // Utils
 uint32_t get_texture_pixel(mlx_texture_t *tex, int x, int y);
 void	free_config(t_config *cfg);
+void    free_map(char **map, int height);
 uint32_t parse_color(char *line);
 void free_split(char **split);
 void parse_texture_or_color(t_config *cfg, char *line);
