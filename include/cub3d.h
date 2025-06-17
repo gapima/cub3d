@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 19:23:38 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/16 22:50:50 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ void	hook(void *param);
 bool load_textures(t_config *cfg);
 mlx_texture_t *get_wall_texture(t_config *cfg, int side, double rayDirX, double rayDirY);
 void set_player_direction(t_config *cfg, char dir);
+void	handle_close(void *param);
 
 // Validação
 void	validate_closed_map(char **map, int height, int width);

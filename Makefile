@@ -1,3 +1,14 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/06/16                                  #+#    #+#              #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = cub3D
 
 CC = cc
@@ -19,7 +30,7 @@ MLX_FLAGS = -I$(MLX_DIR)/include -L$(BUILD_DIR) -lmlx42 -ldl -lm -lglfw -pthread
 SRC = $(wildcard $(SRC_DIR)/*.c)
 OBJ = $(SRC:.c=.o)
 
-# Regra principal
+# Regras principais
 all: $(NAME)
 
 $(MLX_LIB):
@@ -30,9 +41,10 @@ $(LIBFT_LIB):
 	$(MAKE) -C $(LIBFT_DIR)
 
 $(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
-	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -iquote $(INCLUDE_DIR) -I$(LIBFT_DIR) -I./include \
-		-I$(MLX_DIR)/include -Ilib/MLX42/include $(OBJ) $(LIBFT_LIB) $(MLX_FLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -iquote $(INCLUDE_DIR) -I$(LIBFT_DIR) \
+		-I$(MLX_DIR)/include $(OBJ) $(LIBFT_LIB) $(MLX_FLAGS) -o $(NAME)
 
+# Limpeza
 clean:
 	rm -f $(OBJ)
 	$(MAKE) -C $(LIBFT_DIR) clean
@@ -45,4 +57,13 @@ re: fclean all
 
 bonus: all
 
-.PHONY: all clean fclean re bonus
+# Valgrind
+valgrind: all
+	valgrind --leak-check=full \
+		--show-leak-kinds=all \
+		--track-origins=yes \
+		--suppressions=mlx42.supp \
+		./cub3D maps/test.cub > valgrind_log.txt 2>&1 || true
+	@echo "✅ Valgrind executado. Veja o log em valgrind_log.txt"
+
+.PHONY: all clean fclean re bonus valgrind

@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:40:42 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 19:23:18 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/16 22:41:01 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,10 @@ void	handle_input(mlx_key_data_t keydata, void *param)
 	if (keydata.action != MLX_PRESS && keydata.action != MLX_REPEAT)
 		return;
 	if (keydata.key == MLX_KEY_ESCAPE)
+	{
 		mlx_close_window(cfg->mlx);
+		return;	
+	}
 	if (keydata.key == MLX_KEY_W)
 		move_forward(cfg);
 	if (keydata.key == MLX_KEY_S)

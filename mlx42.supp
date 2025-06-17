@@ -1,0 +1,28 @@
+{
+   MLX42 suppression reachable realloc
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   ...
+}
+{
+   MLX42 suppression reachable malloc
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   ...
+}
+{
+   GLIB suppression
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:g_realloc
+   ...
+}
+{
+   CAIRO suppression
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:pixman_glyph_cache_create
+   ...
+}
