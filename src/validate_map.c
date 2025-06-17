@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 15:46:50 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 15:57:24 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/16 23:19:59 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void validate_closed_map(char **map, int height, int width)
 {
 	for (int y = 0; y < height; y++)
 	{
-        printf("%s\n", map[y]);
 		for (int x = 0; x < width; x++)
 		{
 			char c = map[y][x];
