@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 18:07:31 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 18:16:22 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,13 @@ typedef struct s_map_check_ctx
 	int			*py;
 }	t_map_check_ctx;
 
+typedef struct s_map_check
+{
+	char	**map;
+	int		height;
+	int		width;
+}	t_map_check;
+
 /* ======================= CORE ======================= */
 
 bool			init_config(t_config *cfg);
@@ -200,6 +207,8 @@ int				get_max_width(char **map, int height);
 bool			pad_map_lines(char **map, int height, int max_width);
 bool			validate_player_and_chars(t_config *cfg, t_map_check_ctx *mctx);
 void			validate_closed_map(char **map, int height, int width);
+void			calc_projection(t_config *cfg, t_ray *ray, t_dda *dda);
+void			perform_dda(t_config *cfg, t_dda *dda);
 
 /* ======================= UTILS ======================= */
 
