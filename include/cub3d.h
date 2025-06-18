@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 00:46:08 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 01:02:43 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void move_forward(t_config *cfg);
 /* ======================= RENDER ======================= */
 
 void draw_ceiling_and_floor(t_config *cfg, int x, int drawStart, int drawEnd);
-void	draw_wall_slice(t_config *cfg, t_ray_info ray);
+void draw_wall_slice(t_config *cfg, t_ray_info ray);
 double compute_wall_hit_point(t_config *cfg, double perpWallDist, double rayDirX, double rayDirY, int side);
 int compute_tex_x(double wallX, int tex_width, double rayDirX, double rayDirY, int side);
 mlx_texture_t *get_wall_texture(t_config *cfg, int side, double rayDirX, double rayDirY);
