@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 19:07:30 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 17:13:32 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:46:38 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,55 +50,44 @@ void	draw_ceiling_and_floor(t_config *cfg, int x,
 	}
 }
 
-double	compute_wall_hit_point(t_config *cfg, double perp_wall_dist,
-	double ray_dir_x, double ray_dir_y, int side)
+double	compute_wall_hit_point(t_config *cfg, t_ray_info *ray)
 {
-	if (side == 0)
-		return (cfg->player.pos_y + perp_wall_dist * ray_dir_y);
+	if (ray->side == 0)
+		return (cfg->player.pos_y + ray->perp_wall_dist * ray->ray_dir_y);
 	else
-		return (cfg->player.pos_x + perp_wall_dist * ray_dir_x);
+		return (cfg->player.pos_x + ray->perp_wall_dist * ray->ray_dir_x);
 }
 
-int	compute_tex_x(double wallX, int tex_width, double ray_dir_x,
-	double ray_dir_y, int side)
+int	compute_tex_x(double wallX, int tex_width, t_ray_info *ray)
 {
 	int	tex_x;
 
 	tex_x = (int)(wallX * tex_width);
-	if ((side == 0 && ray_dir_x > 0) || (side == 1 && ray_dir_y < 0))
+	if ((ray->side == 0 && ray->ray_dir_x > 0)
+		|| (ray->side == 1 && ray->ray_dir_y < 0))
 		tex_x = tex_width - tex_x - 1;
 	return (tex_x);
 }
 
 void	draw_wall_slice(t_config *cfg, t_ray_info ray)
 {
-	mlx_texture_t	*tex;
-	double			wall_x;
-	int				tex_x;
-	int				tex_y;
-	int				y;
-	int				d;
-	uint32_t		color;
-	int				tex_width;
-	int				tex_height;
+	t_draw_vars	v;
 
-	tex = get_wall_texture(cfg, ray.side, ray.ray_dir_x, ray.ray_dir_y);
-	if (!tex)
+	v.tex = get_wall_texture(cfg, ray.side, ray.ray_dir_x, ray.ray_dir_y);
+	if (!v.tex)
 		return ;
-	tex_width = tex->width;
-	tex_height = tex->height;
-	wall_x = compute_wall_hit_point(cfg, ray.perp_wall_dist,
-			ray.ray_dir_x, ray.ray_dir_y, ray.side);
-	wall_x -= floor(wall_x);
-	tex_x = compute_tex_x(wall_x, tex_width, ray.ray_dir_x,
-			ray.ray_dir_y, ray.side);
-	y = ray.draw_start;
-	while (y < ray.draw_end)
+	v.tex_width = v.tex->width;
+	v.tex_height = v.tex->height;
+	v.wall_x = compute_wall_hit_point(cfg, &ray);
+	v.wall_x -= floor(v.wall_x);
+	v.tex_x = compute_tex_x(v.wall_x, v.tex_width, &ray);
+	v.y = ray.draw_start;
+	while (v.y < ray.draw_end)
 	{
-		d = y * 256 - HEIGHT * 128 + ray.line_height * 128;
-		tex_y = ((d * tex_height) / ray.line_height) / 256;
-		color = get_texture_pixel(tex, tex_x, tex_y);
-		mlx_put_pixel(cfg->img, ray.x, y, color);
-		y++;
+		v.d = v.y * 256 - HEIGHT * 128 + ray.line_height * 128;
+		v.tex_y = ((v.d * v.tex_height) / ray.line_height) / 256;
+		v.color = get_texture_pixel(v.tex, v.tex_x, v.tex_y);
+		mlx_put_pixel(cfg->img, ray.x, v.y, v.color);
+		v.y++;
 	}
 }

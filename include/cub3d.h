@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 17:24:04 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:46:08 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,18 @@ typedef struct s_parse_ctx
 	int			fd;
 }	t_parse_ctx;
 
+typedef struct s_draw_vars
+{
+	int				y;
+	int				d;
+	int				tex_x;
+	int				tex_y;
+	int				tex_width;
+	int				tex_height;
+	double			wall_x;
+	uint32_t		color;
+	mlx_texture_t	*tex;
+}	t_draw_vars;
 
 /* ======================= CORE ======================= */
 
@@ -136,20 +148,8 @@ void			draw_ceiling_and_floor(
 					int draw_end
 					);
 void			draw_wall_slice(t_config *cfg, t_ray_info ray);
-double			compute_wall_hit_point(
-					t_config *cfg,
-					double perp_wall_dist,
-					double ray_dir_x,
-					double ray_dir_y,
-					int side
-					);
-int				compute_tex_x(
-					double wall_x,
-					int tex_width,
-					double ray_dir_x,
-					double ray_dir_y,
-					int side
-					);
+double			compute_wall_hit_point(t_config *cfg, t_ray_info *ray);
+int				compute_tex_x(double wallX, int tex_width, t_ray_info *ray);
 mlx_texture_t	*get_wall_texture(
 					t_config *cfg,
 					int side,
