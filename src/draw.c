@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:37:27 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 00:46:27 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 13:54:43 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,37 +14,37 @@
 
 static void	init_ray(t_config *cfg, t_ray *ray)
 {
-	ray->cameraX = 2 * ray->x / (double)WIDTH - 1;
-	ray->rayDirX = cfg->player.dir_x + cfg->player.plane_x * ray->cameraX;
-	ray->rayDirY = cfg->player.dir_y + cfg->player.plane_y * ray->cameraX;
+	ray->camera_x = 2 * ray->x / (double)WIDTH - 1;
+	ray->ray_dir_x = cfg->player.dir_x + cfg->player.plane_x * ray->camera_x;
+	ray->ray_dir_y = cfg->player.dir_y + cfg->player.plane_y * ray->camera_x;
 }
 
 static void	init_dda(t_config *cfg, t_ray *ray, t_dda *dda)
 {
-	dda->mapX = (int)cfg->player.pos_x;
-	dda->mapY = (int)cfg->player.pos_y;
-	dda->deltaDistX = fabs(1.0 / ray->rayDirX);
-	dda->deltaDistY = fabs(1.0 / ray->rayDirY);
+	dda->map_x = (int)cfg->player.pos_x;
+	dda->map_y = (int)cfg->player.pos_y;
+	dda->delta_dist_x = fabs(1.0 / ray->ray_dir_x);
+	dda->delta_dist_y = fabs(1.0 / ray->ray_dir_y);
 
-	if (ray->rayDirX < 0)
+	if (ray->ray_dir_x < 0)
 	{
-		dda->stepX = -1;
-		dda->sideDistX = (cfg->player.pos_x - dda->mapX) * dda->deltaDistX;
+		dda->step_x = -1;
+		dda->side_dist_x = (cfg->player.pos_x - dda->map_x) * dda->delta_dist_x;
 	}
 	else
 	{
-		dda->stepX = 1;
-		dda->sideDistX = (dda->mapX + 1.0 - cfg->player.pos_x) * dda->deltaDistX;
+		dda->step_x = 1;
+		dda->side_dist_x = (dda->map_x + 1.0 - cfg->player.pos_x) * dda->delta_dist_x;
 	}
-	if (ray->rayDirY < 0)
+	if (ray->ray_dir_y < 0)
 	{
-		dda->stepY = -1;
-		dda->sideDistY = (cfg->player.pos_y - dda->mapY) * dda->deltaDistY;
+		dda->step_y = -1;
+		dda->side_dist_y = (cfg->player.pos_y - dda->map_y) * dda->delta_dist_y;
 	}
 	else
 	{
-		dda->stepY = 1;
-		dda->sideDistY = (dda->mapY + 1.0 - cfg->player.pos_y) * dda->deltaDistY;
+		dda->step_y = 1;
+		dda->side_dist_y = (dda->map_y + 1.0 - cfg->player.pos_y) * dda->delta_dist_y;
 	}
 	dda->hit = 0;
 }
@@ -53,22 +53,22 @@ static void	perform_dda(t_config *cfg, t_dda *dda)
 {
 	while (!dda->hit)
 	{
-		if (dda->sideDistX < dda->sideDistY)
+		if (dda->side_dist_x < dda->side_dist_y)
 		{
-			dda->sideDistX += dda->deltaDistX;
-			dda->mapX += dda->stepX;
+			dda->side_dist_x += dda->delta_dist_x;
+			dda->map_x += dda->step_x;
 			dda->side = 0;
 		}
 		else
 		{
-			dda->sideDistY += dda->deltaDistY;
-			dda->mapY += dda->stepY;
+			dda->side_dist_y += dda->delta_dist_y;
+			dda->map_y += dda->step_y;
 			dda->side = 1;
 		}
-		if (dda->mapX < 0 || dda->mapY < 0
-			|| !cfg->map[dda->mapY] || !cfg->map[dda->mapY][dda->mapX])
+		if (dda->map_x < 0 || dda->map_y < 0
+			|| !cfg->map[dda->map_y] || !cfg->map[dda->map_y][dda->map_x])
 			break;
-		if (cfg->map[dda->mapY][dda->mapX] == '1')
+		if (cfg->map[dda->map_y][dda->map_x] == '1')
 			dda->hit = 1;
 	}
 }
@@ -76,17 +76,17 @@ static void	perform_dda(t_config *cfg, t_dda *dda)
 static void	calc_projection(t_config *cfg, t_ray *ray, t_dda *dda)
 {
 	if (dda->side == 0)
-		ray->perpWallDist = (dda->mapX - cfg->player.pos_x + (1 - dda->stepX) / 2.0) / ray->rayDirX;
+		ray->perp_wall_dist = (dda->map_x - cfg->player.pos_x + (1 - dda->step_x) / 2.0) / ray->ray_dir_x;
 	else
-		ray->perpWallDist = (dda->mapY - cfg->player.pos_y + (1 - dda->stepY) / 2.0) / ray->rayDirY;
+		ray->perp_wall_dist = (dda->map_y - cfg->player.pos_y + (1 - dda->step_y) / 2.0) / ray->ray_dir_y;
 
-	ray->lineHeight = (int)(HEIGHT / ray->perpWallDist);
-	ray->drawStart = -ray->lineHeight / 2 + HEIGHT / 2;
-	if (ray->drawStart < 0)
-		ray->drawStart = 0;
-	ray->drawEnd = ray->lineHeight / 2 + HEIGHT / 2;
-	if (ray->drawEnd >= HEIGHT)
-		ray->drawEnd = HEIGHT - 1;
+	ray->line_height = (int)(HEIGHT / ray->perp_wall_dist);
+	ray->draw_start = -ray->line_height / 2 + HEIGHT / 2;
+	if (ray->draw_start < 0)
+		ray->draw_start = 0;
+	ray->draw_end = ray->line_height / 2 + HEIGHT / 2;
+	if (ray->draw_end >= HEIGHT)
+		ray->draw_end = HEIGHT - 1;
 }
 
 void	render_frame(t_config *cfg)
@@ -102,15 +102,15 @@ void	render_frame(t_config *cfg)
 		init_dda(cfg, &ray, &dda);
 		perform_dda(cfg, &dda);
 		calc_projection(cfg, &ray, &dda);
-		draw_ceiling_and_floor(cfg, ray.x, ray.drawStart, ray.drawEnd);
+		draw_ceiling_and_floor(cfg, ray.x, ray.draw_start, ray.draw_end);
 		ray_info = (t_ray_info){
 			.x = ray.x,
-			.draw_start = ray.drawStart,
-			.draw_end = ray.drawEnd,
-			.line_height = ray.lineHeight,
-			.ray_dir_x = ray.rayDirX,
-			.ray_dir_y = ray.rayDirY,
-			.perp_wall_dist = ray.perpWallDist,
+			.draw_start = ray.draw_start,
+			.draw_end = ray.draw_end,
+			.line_height = ray.line_height,
+			.ray_dir_x = ray.ray_dir_x,
+			.ray_dir_y = ray.ray_dir_y,
+			.perp_wall_dist = ray.perp_wall_dist,
 			.side = dda.side
 		};
 		draw_wall_slice(cfg, ray_info);

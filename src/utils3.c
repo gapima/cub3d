@@ -6,30 +6,30 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 19:07:30 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 00:44:54 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 13:49:55 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-mlx_texture_t *get_wall_texture(t_config *cfg, int side, double rayDirX, double rayDirY)
+mlx_texture_t *get_wall_texture(t_config *cfg, int side, double ray_dir_x, double ray_dir_y)
 {
 	if (side == 0)
-		return (rayDirX < 0) ? cfg->tex_we : cfg->tex_ea;
+		return (ray_dir_x < 0) ? cfg->tex_we : cfg->tex_ea;
 	else
-		return (rayDirY < 0) ? cfg->tex_no : cfg->tex_so;
+		return (ray_dir_y < 0) ? cfg->tex_no : cfg->tex_so;
 }
 
-void draw_ceiling_and_floor(t_config *cfg, int x, int drawStart, int drawEnd)
+void draw_ceiling_and_floor(t_config *cfg, int x, int draw_start, int draw_end)
 {
 	int y;
 	y = 0;
-	while (y < drawStart)
+	while (y < draw_start)
 	{
 		mlx_put_pixel(cfg->img, x, y, cfg->ceiling_color);
 		y++;
 	}
-	y = drawEnd;
+	y = draw_end;
 	while (y < HEIGHT)
 	{
 		mlx_put_pixel(cfg->img, x, y, cfg->floor_color);
@@ -37,20 +37,20 @@ void draw_ceiling_and_floor(t_config *cfg, int x, int drawStart, int drawEnd)
 	}
 }
 
-double compute_wall_hit_point(t_config *cfg, double perpWallDist, double rayDirX, double rayDirY, int side)
+double compute_wall_hit_point(t_config *cfg, double perp_wall_dist, double ray_dir_x, double ray_dir_y, int side)
 {
 	if (side == 0)
-		return (cfg->player.pos_y + perpWallDist * rayDirY);
+		return (cfg->player.pos_y + perp_wall_dist * ray_dir_y);
 	else
-		return (cfg->player.pos_x + perpWallDist * rayDirX);
+		return (cfg->player.pos_x + perp_wall_dist * ray_dir_x);
 }
 
-int compute_tex_x(double wallX, int tex_width, double rayDirX, double rayDirY, int side)
+int compute_tex_x(double wallX, int tex_width, double ray_dir_x, double ray_dir_y, int side)
 {
 	int tex_x;
 
 	tex_x = (int)(wallX * tex_width);
-	if ((side == 0 && rayDirX > 0) || (side == 1 && rayDirY < 0))
+	if ((side == 0 && ray_dir_x > 0) || (side == 1 && ray_dir_y < 0))
 		tex_x = tex_width - tex_x - 1;
 	return (tex_x);
 }
