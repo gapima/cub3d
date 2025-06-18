@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/14 13:31:04 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16                                    */
+/*   Created: 2025/06/18 16:30:32 by glima             #+#    #+#             */
+/*   Updated: 2025/06/18 16:34:07 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static bool check_and_set_player(char c, int x, int y, int *found, t_config *cfg, int *px, int *py)
+static bool	check_and_set_player(char c, int x, int y, int *found, t_config *cfg, int *px, int *py)
 {
 	if (ft_strchr("NSEW", c))
 	{
@@ -29,8 +29,7 @@ static bool check_and_set_player(char c, int x, int y, int *found, t_config *cfg
 	return (true);
 }
 
-
-static bool is_valid_or_report_error(char c)
+static bool	is_valid_or_report_error(char c)
 {
 	if (!is_valid_map_char(c) && c != ' ')
 	{
@@ -43,11 +42,11 @@ static bool is_valid_or_report_error(char c)
 	return (true);
 }
 
-static bool validate_player_and_chars(char **map, int height, t_config *cfg, int *px, int *py)
+static bool	validate_player_and_chars(char **map, int height, t_config *cfg, int *px, int *py)
 {
-	int i;
-	int j;
-	int found;
+	int	i;
+	int	j;
+	int	found;
 
 	i = 0;
 	found = 0;
@@ -72,12 +71,11 @@ static bool validate_player_and_chars(char **map, int height, t_config *cfg, int
 	return (true);
 }
 
-
-static bool validate_and_prepare_map(char **map, int height, t_config *cfg)
+static bool	validate_and_prepare_map(char **map, int height, t_config *cfg)
 {
-	int max_width;
-	int player_x;
-	int player_y;
+	int	max_width;
+	int	player_x;
+	int	player_y;
 
 	max_width = get_max_width(map, height);
 	if (!pad_map_lines(map, height, max_width))
@@ -92,12 +90,10 @@ static bool validate_and_prepare_map(char **map, int height, t_config *cfg)
 	return (true);
 }
 
-
-
-bool parse_cub_file(const char *path, t_config *cfg)
+bool	parse_cub_file(const char *path, t_config *cfg)
 {
-	char **map;
-	int height;
+	char	**map;
+	int		height;
 
 	map = read_cub_file(path, cfg, &height);
 	if (!map)
