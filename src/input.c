@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:40:42 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 16:41:46 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 18:45:43 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,12 @@ static void	move_backward(t_config *cfg)
 	p = &cfg->player;
 	new_x = p->pos_x - p->dir_x * MOVE_SPEED;
 	new_y = p->pos_y - p->dir_y * MOVE_SPEED;
-	if (cfg->map[(int)new_y][(int)p->pos_x] == '0')
-		p->pos_y = new_y;
-	if (cfg->map[(int)p->pos_y][(int)new_x] == '0')
+
+	if (cfg->map[(int)new_y][(int)new_x] == '0')
+	{
 		p->pos_x = new_x;
+		p->pos_y = new_y;
+	}
 }
 
 static void	strafe_left(t_config *cfg)
@@ -36,10 +38,12 @@ static void	strafe_left(t_config *cfg)
 	p = &cfg->player;
 	new_x = p->pos_x - p->plane_x * MOVE_SPEED;
 	new_y = p->pos_y - p->plane_y * MOVE_SPEED;
-	if (cfg->map[(int)new_y][(int)p->pos_x] == '0')
-		p->pos_y = new_y;
-	if (cfg->map[(int)p->pos_y][(int)new_x] == '0')
+
+	if (cfg->map[(int)new_y][(int)new_x] == '0')
+	{
 		p->pos_x = new_x;
+		p->pos_y = new_y;
+	}
 }
 
 static void	strafe_right(t_config *cfg)
@@ -51,10 +55,12 @@ static void	strafe_right(t_config *cfg)
 	p = &cfg->player;
 	new_x = p->pos_x + p->plane_x * MOVE_SPEED;
 	new_y = p->pos_y + p->plane_y * MOVE_SPEED;
-	if (cfg->map[(int)new_y][(int)p->pos_x] == '0')
-		p->pos_y = new_y;
-	if (cfg->map[(int)p->pos_y][(int)new_x] == '0')
+
+	if (cfg->map[(int)new_y][(int)new_x] == '0')
+	{
 		p->pos_x = new_x;
+		p->pos_y = new_y;
+	}
 }
 
 static void	rotate_view(t_config *cfg, double angle)
@@ -77,16 +83,15 @@ void	handle_input(mlx_key_data_t keydata, void *param)
 	t_config	*cfg;
 
 	cfg = (t_config *)param;
-	if (keydata.action != MLX_PRESS && keydata.action != MLX_REPEAT)
-		return ;
-	if (keydata.key == MLX_KEY_ESCAPE)
+	if (keydata.key == MLX_KEY_ESCAPE && keydata.action == MLX_PRESS)
 	{
 		mlx_close_window(cfg->mlx);
 		return ;
 	}
-	if (keydata.key == MLX_KEY_W)
+
+	if (mlx_is_key_down(cfg->mlx, MLX_KEY_W))
 		move_forward(cfg);
-	if (keydata.key == MLX_KEY_S)
+	if (mlx_is_key_down(cfg->mlx, MLX_KEY_S))
 		move_backward(cfg);
 	if (mlx_is_key_down(cfg->mlx, MLX_KEY_A))
 		strafe_left(cfg);

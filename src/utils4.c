@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 19:18:52 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 17:34:55 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 18:44:37 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,11 @@ void	move_forward(t_config *cfg)
 	p = &cfg->player;
 	new_x = p->pos_x + p->dir_x * MOVE_SPEED;
 	new_y = p->pos_y + p->dir_y * MOVE_SPEED;
-	if (cfg->map[(int)new_y][(int)p->pos_x] == '0')
-		p->pos_y = new_y;
-	if (cfg->map[(int)p->pos_y][(int)new_x] == '0')
+	if (cfg->map[(int)new_y][(int)new_x] == '0')
+	{
 		p->pos_x = new_x;
+		p->pos_y = new_y;
+	}
 }
 
 bool	pad_map_lines(char **map, int height, int max_width)
