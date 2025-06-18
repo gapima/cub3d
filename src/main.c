@@ -11,6 +11,7 @@ static void	cleanup_and_exit(t_config *cfg, char *msg)
 	if (msg)
 		ft_putstr_fd(msg, 2);
 	free_config(cfg);
+	mlx_terminate(cfg->mlx);
 	exit(EXIT_FAILURE);
 }
 
@@ -37,8 +38,8 @@ static void	start_loop(t_config *cfg)
 void	handle_close(void *param)
 {
 	t_config *cfg = (t_config *)param;
-	mlx_terminate(cfg->mlx);
 	free_config(cfg);
+	mlx_terminate(cfg->mlx);
 	exit(EXIT_SUCCESS);
 }
 
@@ -57,5 +58,7 @@ int	main(int argc, char **argv)
 	if (!load_textures(&cfg))
 		cleanup_and_exit(&cfg, "Erro ao carregar texturas\n");
 	start_loop(&cfg);
-	return (EXIT_SUCCESS); // nunca chega aqui, pois exit() é chamado no hook
+	free_config(&cfg);
+	mlx_terminate(cfg.mlx);
+	return (EXIT_SUCCESS);
 }
