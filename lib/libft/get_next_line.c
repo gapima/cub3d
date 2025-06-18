@@ -1,16 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/18 14:03:01 by glima             #+#    #+#             */
+/*   Updated: 2025/06/18 14:03:01 by glima            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "libft.h"
 
-static char	*ft_get_line(int fd, char *str)
+static char	*ft_get_line(int fd, char *str, int temp_len)
 {
 	char	*temp;
 	char	*joined;
-	int		temp_len;
 
 	temp = malloc(BUFFER_SIZE + 1);
 	if (!temp)
 		return (NULL);
-
 	temp_len = 1;
 	while ((str == NULL || ft_strchr(str, '\n') == NULL) && temp_len > 0)
 	{
@@ -22,7 +31,6 @@ static char	*ft_get_line(int fd, char *str)
 			return (NULL);
 		}
 		temp[temp_len] = '\0';
-
 		if (!str)
 			str = ft_strdup("");
 		joined = ft_strjoin(str, temp);
@@ -32,7 +40,6 @@ static char	*ft_get_line(int fd, char *str)
 	free(temp);
 	return (str);
 }
-
 
 static char	*ft_current_line(char *str, char *line)
 {
@@ -93,13 +100,11 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	next_line = ft_get_line(fd, next_line);
+	next_line = ft_get_line(fd, next_line, 0);
 	if (!next_line)
 		return (NULL);
 	current_line = NULL;
 	current_line = ft_current_line(next_line, current_line);
-
 	next_line = ft_get_line_rest(next_line);
-
 	return (current_line);
 }
