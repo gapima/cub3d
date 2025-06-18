@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:37:27 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 19:08:16 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 00:46:27 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,9 @@ static void	calc_projection(t_config *cfg, t_ray *ray, t_dda *dda)
 
 void	render_frame(t_config *cfg)
 {
-	t_ray	ray;
-	t_dda	dda;
+	t_ray		ray;
+	t_dda		dda;
+	t_ray_info	ray_info;
 
 	ray.x = 0;
 	while (ray.x < WIDTH)
@@ -102,9 +103,17 @@ void	render_frame(t_config *cfg)
 		perform_dda(cfg, &dda);
 		calc_projection(cfg, &ray, &dda);
 		draw_ceiling_and_floor(cfg, ray.x, ray.drawStart, ray.drawEnd);
-		draw_wall_slice(cfg, ray.x, ray.drawStart, ray.drawEnd,
-			ray.lineHeight, ray.rayDirX, ray.rayDirY,
-			ray.perpWallDist, dda.side);
+		ray_info = (t_ray_info){
+			.x = ray.x,
+			.draw_start = ray.drawStart,
+			.draw_end = ray.drawEnd,
+			.line_height = ray.lineHeight,
+			.ray_dir_x = ray.rayDirX,
+			.ray_dir_y = ray.rayDirY,
+			.perp_wall_dist = ray.perpWallDist,
+			.side = dda.side
+		};
+		draw_wall_slice(cfg, ray_info);
 		ray.x++;
 	}
 }

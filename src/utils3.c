@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 19:07:30 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 19:08:32 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 00:44:54 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,35 +55,31 @@ int compute_tex_x(double wallX, int tex_width, double rayDirX, double rayDirY, i
 	return (tex_x);
 }
 
-void draw_wall_slice(t_config *cfg, int x, int drawStart, int drawEnd, int lineHeight, double rayDirX, double rayDirY, double perpWallDist, int side)
+void	draw_wall_slice(t_config *cfg, t_ray_info ray)
 {
-	mlx_texture_t *tex;
-	int tex_width;
-	int tex_height;
-	double wallX;
-	int tex_x;
-	int y;
-	int d;
-	int tex_y;
-	uint32_t color;
+	mlx_texture_t	*tex;
+	double			wall_x;
+	int				tex_x, tex_y, y, d;
+	uint32_t		color;
+	int				tex_width, tex_height;
 
-	tex = get_wall_texture(cfg, side, rayDirX, rayDirY);
+	tex = get_wall_texture(cfg, ray.side, ray.ray_dir_x, ray.ray_dir_y);
 	if (!tex)
 		return;
 	tex_width = tex->width;
 	tex_height = tex->height;
-
-	wallX = compute_wall_hit_point(cfg, perpWallDist, rayDirX, rayDirY, side);
-	wallX -= floor(wallX);
-	tex_x = compute_tex_x(wallX, tex_width, rayDirX, rayDirY, side);
-
-	y = drawStart;
-	while (y < drawEnd)
+	wall_x = compute_wall_hit_point(cfg, ray.perp_wall_dist,
+			ray.ray_dir_x, ray.ray_dir_y, ray.side);
+	wall_x -= floor(wall_x);
+	tex_x = compute_tex_x(wall_x, tex_width, ray.ray_dir_x,
+			ray.ray_dir_y, ray.side);
+	y = ray.draw_start;
+	while (y < ray.draw_end)
 	{
-		d = y * 256 - HEIGHT * 128 + lineHeight * 128;
-		tex_y = ((d * tex_height) / lineHeight) / 256;
+		d = y * 256 - HEIGHT * 128 + ray.line_height * 128;
+		tex_y = ((d * tex_height) / ray.line_height) / 256;
 		color = get_texture_pixel(tex, tex_x, tex_y);
-		mlx_put_pixel(cfg->img, x, y, color);
+		mlx_put_pixel(cfg->img, ray.x, y, color);
 		y++;
 	}
 }

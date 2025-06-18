@@ -36,6 +36,7 @@ static bool is_valid_or_report_error(char c)
 	{
 		ft_putstr_fd("Error: Invalid character: ", 2);
 		ft_putchar_fd(c, 2);
+		printf("%c", c);
 		ft_putchar_fd('\n', 2);
 		return (false);
 	}
