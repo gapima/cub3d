@@ -6,25 +6,31 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 19:15:41 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 00:04:51 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 16:56:58 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-uint32_t get_texture_pixel(mlx_texture_t *tex, int x, int y)
+uint32_t	get_texture_pixel(mlx_texture_t *tex, int x, int y)
 {
-	int index = (y * tex->width + x) * 4;
-	uint8_t r = tex->pixels[index + 0];
-	uint8_t g = tex->pixels[index + 1];
-	uint8_t b = tex->pixels[index + 2];
-	uint8_t a = tex->pixels[index + 3];
+	int		index;
+	uint8_t	r;
+	uint8_t	g;
+	uint8_t	b;
+	uint8_t	a;
+
+	index = (y * tex->width + x) * 4;
+	r = tex->pixels[index + 0];
+	g = tex->pixels[index + 1];
+	b = tex->pixels[index + 2];
+	a = tex->pixels[index + 3];
 	return (r << 24 | g << 16 | b << 8 | a);
 }
 
 void	free_config(t_config *cfg)
 {
-	int i;
+	int	i;
 
 	if (cfg->map)
 	{
@@ -37,7 +43,6 @@ void	free_config(t_config *cfg)
 	free(cfg->so_path);
 	free(cfg->we_path);
 	free(cfg->ea_path);
-
 	if (cfg->tex_no)
 		mlx_delete_texture(cfg->tex_no);
 	if (cfg->tex_so)
@@ -46,17 +51,16 @@ void	free_config(t_config *cfg)
 		mlx_delete_texture(cfg->tex_we);
 	if (cfg->tex_ea)
 		mlx_delete_texture(cfg->tex_ea);
-
 	if (cfg->img)
 		mlx_delete_image(cfg->mlx, cfg->img);
 }
 
-uint32_t parse_color(char *line)
+uint32_t	parse_color(char *line)
 {
-	char **components;
-	int r;
-	int g;
-	int b;
+	char	**components;
+	int		r;
+	int		g;
+	int		b;
 
 	components = ft_split(line, ',');
 	if (!components || !components[0] || !components[1] || !components[2])
@@ -73,22 +77,22 @@ uint32_t parse_color(char *line)
 	return ((r << 24) | (g << 16) | (b << 8) | 0xFF);
 }
 
-void free_split(char **split)
+void	free_split(char **split)
 {
-	int i;
+	int	i;
+
 	i = 0;
 	while (split && split[i])
 		free(split[i++]);
 	free(split);
 }
 
-void set_player_direction(t_config *cfg, char dir)
+void	set_player_direction(t_config *cfg, char dir)
 {
 	cfg->player.dir_x = 0;
 	cfg->player.dir_y = 0;
 	cfg->player.plane_x = 0;
 	cfg->player.plane_y = 0;
-
 	if (dir == 'N')
 	{
 		cfg->player.dir_y = -1;
