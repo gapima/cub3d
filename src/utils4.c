@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 19:18:52 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 17:15:33 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:34:55 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,29 @@ void	move_forward(t_config *cfg)
 		p->pos_y = new_y;
 	if (cfg->map[(int)p->pos_y][(int)new_x] == '0')
 		p->pos_x = new_x;
+}
+
+bool	pad_map_lines(char **map, int height, int max_width)
+{
+	int		i;
+	int		len;
+	int		j;
+	char	*padded;
+
+	i = 0;
+	while (i < height)
+	{
+		padded = ft_calloc(max_width + 1, sizeof(char));
+		if (!padded)
+			return (false);
+		len = ft_strlen(map[i]);
+		ft_memcpy(padded, map[i], len);
+		j = len;
+		while (j < max_width)
+			padded[j++] = ' ';
+		free(map[i]);
+		map[i] = padded;
+		i++;
+	}
+	return (true);
 }
