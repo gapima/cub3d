@@ -57,13 +57,4 @@ re: fclean all
 
 bonus: all
 
-# Valgrind
-valgrind: all
-	valgrind --leak-check=full \
-		--show-leak-kinds=all \
-		--track-origins=yes \
-		--suppressions=mlx42.supp \
-		./cub3D maps/test.cub > valgrind_log.txt 2>&1 || true
-	@echo "✅ Valgrind executado. Veja o log em valgrind_log.txt"
-
 .PHONY: all clean fclean re bonus valgrind

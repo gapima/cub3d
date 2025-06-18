@@ -18,7 +18,7 @@ static bool check_and_set_player(char c, int x, int y, int *found, t_config *cfg
 	{
 		if (*found)
 		{
-			ft_putstr_fd("❌ Erro: Mais de uma posição inicial.\n", 2);
+			ft_putstr_fd("Error: More than one starting position found.\n", 2);
 			return (false);
 		}
 		*found = 1;
@@ -34,7 +34,7 @@ static bool is_valid_or_report_error(char c)
 {
 	if (!is_valid_map_char(c) && c != ' ')
 	{
-		ft_putstr_fd("❌ Caractere inválido: ", 2);
+		ft_putstr_fd("Error: Invalid character: ", 2);
 		ft_putchar_fd(c, 2);
 		ft_putchar_fd('\n', 2);
 		return (false);
@@ -65,7 +65,7 @@ static bool validate_player_and_chars(char **map, int height, t_config *cfg, int
 	}
 	if (!found)
 	{
-		ft_putstr_fd("❌ Erro: Nenhuma posição inicial do jogador.\n", 2);
+		ft_putstr_fd("Error: No player starting position found.\n", 2);
 		return (false);
 	}
 	return (true);

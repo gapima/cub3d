@@ -1,10 +1,10 @@
-NO ./textures/tree2.png
-SO ./textures/tree2.png
-WE ./textures/tree.png
-EA ./textures/tree.png
+NO ./textures/wall_no.png
+SO ./textures/wall_so.png
+WE ./textures/wall_ea.png
+EA ./textures/wall_we.png
 
-F 40,60,30
-C 10,10,30
+F 220,100,0
+C 225,30,0
 
 11111111111111111111
 1N00000000000000000

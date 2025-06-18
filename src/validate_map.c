@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 15:46:50 by glima             #+#    #+#             */
-/*   Updated: 2025/06/17 23:22:10 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 00:02:32 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static bool check_sides(char **map, int x, int y, int height, int width)
 
 static void put_coord_error(int x, int y)
 {
-	ft_putstr_fd("❌ Erro: Mapa não está completamente fechado nas coordenadas (", 2);
+	ft_putstr_fd("Error: Map is not completely enclosed at coordinates (", 2);
 	ft_putnbr_fd(x, 2);
 	ft_putstr_fd(", ", 2);
 	ft_putnbr_fd(y, 2);

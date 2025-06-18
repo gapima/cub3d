@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 18:47:12 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 19:44:23 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 00:06:28 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int parse_color_component(char *str)
 	value = ft_atoi(str);
 	if (value < 0 || value > 255)
 	{
-		ft_putstr_fd("\u274c Erro: Componente de cor fora do intervalo (0-255): ", 2);
+		ft_putstr_fd("❌ Error: Color component out of range (0-255): ", 2);
 		ft_putstr_fd(str, 2);
 		ft_putchar_fd('\n', 2);
 		exit(EXIT_FAILURE);
@@ -41,7 +41,7 @@ char **read_cub_file(const char *path, t_config *cfg, int *out_height)
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 	{
-		ft_putstr_fd("Erro ao abrir o arquivo .cub\n", 2);
+		ft_putstr_fd("Error opening .cub file\n", 2);
 		return (NULL);
 	}
 	map = malloc(sizeof(char *) * (MAX_MAP_HEIGHT + 1));

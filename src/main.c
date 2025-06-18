@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 23:15:40 by glima             #+#    #+#             */
-/*   Updated: 2025/06/17 23:15:41 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 00:02:07 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static void	start_loop(t_config *cfg)
 		return;
 	mlx_loop_hook(cfg->mlx, &hook, cfg);
 	mlx_key_hook(cfg->mlx, &handle_input, cfg);
-	mlx_close_hook(cfg->mlx, &handle_close, cfg);  // ✅ fecha com segurança
+	mlx_close_hook(cfg->mlx, &handle_close, cfg);
 	mlx_loop(cfg->mlx);
 }
 
@@ -64,11 +64,11 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		show_usage();
 	if (!init_config(&cfg))
-		cleanup_and_exit(&cfg, "Erro ao inicializar a configuração.\n");
+		cleanup_and_exit(&cfg, "Error: failed to initialize configuration.\n");
 	if (!parse_cub_file(argv[1], &cfg))
-		cleanup_and_exit(&cfg, "Erro ao analisar o arquivo .cub\n");
+		cleanup_and_exit(&cfg, "");
 	if (!load_textures(&cfg))
-		cleanup_and_exit(&cfg, "Erro ao carregar texturas\n");
+		cleanup_and_exit(&cfg, "Error: failed to load textures\n");
 	start_loop(&cfg);
 	free_config(&cfg);
 	mlx_terminate(cfg.mlx);

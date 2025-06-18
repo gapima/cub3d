@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 19:15:41 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 18:45:14 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 00:04:51 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ uint32_t parse_color(char *line)
 	components = ft_split(line, ',');
 	if (!components || !components[0] || !components[1] || !components[2])
 	{
-		ft_putstr_fd("\u274c Erro: Formato de cor inválido: ", 2);
+		ft_putstr_fd("Error: Invalid color format: ", 2);
 		ft_putstr_fd(line, 2);
 		ft_putchar_fd('\n', 2);
 		exit(EXIT_FAILURE);

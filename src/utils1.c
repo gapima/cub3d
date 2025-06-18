@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 18:44:32 by glima             #+#    #+#             */
-/*   Updated: 2025/06/16 18:45:49 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 00:05:42 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void parse_texture_or_color(t_config *cfg, char *line)
 		cfg->ceiling_color = parse_color(line + 2);
 	else
 	{
-		ft_putstr_fd("\u274c Erro: Linha inválida: ", 2);
+		ft_putstr_fd("❌ Error: Invalid line: ", 2);
 		ft_putstr_fd(line, 2);
 		ft_putchar_fd('\n', 2);
 		exit(EXIT_FAILURE);
