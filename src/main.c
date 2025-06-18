@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 23:15:40 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 00:02:07 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 15:14:33 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,35 +27,15 @@ static void	cleanup_and_exit(t_config *cfg, char *msg)
 	exit(EXIT_FAILURE);
 }
 
-void	hook(void *param)
-{
-	t_config *cfg = (t_config *)param;
-
-	mlx_delete_image(cfg->mlx, cfg->img);
-	cfg->img = mlx_new_image(cfg->mlx, WIDTH, HEIGHT);
-	mlx_image_to_window(cfg->mlx, cfg->img, 0, 0);
-	render_frame(cfg);
-}
-
 static void	start_loop(t_config *cfg)
 {
 	if (!cfg->mlx)
-		return;
+		return ;
 	mlx_loop_hook(cfg->mlx, &hook, cfg);
 	mlx_key_hook(cfg->mlx, &handle_input, cfg);
 	mlx_close_hook(cfg->mlx, &handle_close, cfg);
 	mlx_loop(cfg->mlx);
 }
-
-void	handle_close(void *param)
-{
-	t_config *cfg = (t_config *)param;
-	free_config(cfg);
-	mlx_terminate(cfg->mlx);
-	exit(EXIT_SUCCESS);
-}
-
-
 
 int	main(int argc, char **argv)
 {

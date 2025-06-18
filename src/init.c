@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:26:33 by glima             #+#    #+#             */
-/*   Updated: 2025/06/17 23:58:06 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 15:13:06 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,3 +39,20 @@ bool	init_config(t_config *cfg)
 	return (true);
 }
 
+void	hook(void *param)
+{
+	t_config *cfg = (t_config *)param;
+
+	mlx_delete_image(cfg->mlx, cfg->img);
+	cfg->img = mlx_new_image(cfg->mlx, WIDTH, HEIGHT);
+	mlx_image_to_window(cfg->mlx, cfg->img, 0, 0);
+	render_frame(cfg);
+}
+
+void	handle_close(void *param)
+{
+	t_config *cfg = (t_config *)param;
+	free_config(cfg);
+	mlx_terminate(cfg->mlx);
+	exit(EXIT_SUCCESS);
+}
