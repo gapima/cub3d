@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 13:58:27 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:24:04 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,15 @@ typedef struct s_ray_info
 	int		side;
 }	t_ray_info;
 
+typedef struct s_parse_ctx
+{
+	t_config	*cfg;
+	char		**map;
+	int			*y;
+	int			fd;
+}	t_parse_ctx;
+
+
 /* ======================= CORE ======================= */
 
 bool			init_config(t_config *cfg);
@@ -156,13 +165,7 @@ char			**read_cub_file(
 					t_config *cfg,
 					int *out_height
 					);
-bool			process_line(
-					t_config *cfg,
-					char *line,
-					char **map,
-					int *y,
-					int fd
-					);
+bool			process_line(t_parse_ctx *ctx, char *line);
 bool			handle_map_line(char **map, char *line, int *y, int fd);
 bool			handle_texture_line(t_config *cfg, char *line);
 bool			is_map_line(char *line);

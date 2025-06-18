@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 18:44:32 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 17:02:01 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:22:50 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ bool	handle_map_line(char **map, char *line, int *y, int fd)
 	return (true);
 }
 
-bool	process_line(t_config *cfg, char *line, char **map, int *y, int fd)
+bool	process_line(t_parse_ctx *ctx, char *line)
 {
 	if (line[0] == '\n' || line[0] == '\0')
 	{
@@ -82,6 +82,6 @@ bool	process_line(t_config *cfg, char *line, char **map, int *y, int fd)
 		return (true);
 	}
 	if (!is_map_line(line))
-		return (handle_texture_line(cfg, line));
-	return (handle_map_line(map, line, y, fd));
+		return (handle_texture_line(ctx->cfg, line));
+	return (handle_map_line(ctx->map, line, ctx->y, ctx->fd));
 }
