@@ -6,13 +6,13 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 18:44:32 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 00:05:42 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:02:01 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void parse_texture_or_color(t_config *cfg, char *line)
+void	parse_texture_or_color(t_config *cfg, char *line)
 {
 	if (ft_strncmp(line, "NO ", 3) == 0)
 		cfg->no_path = ft_strtrim(line + 3, " \n\r");
@@ -35,14 +35,19 @@ void parse_texture_or_color(t_config *cfg, char *line)
 	}
 }
 
-bool is_map_line(char *line)
+bool	is_map_line(char *line)
 {
-	return !(ft_strncmp(line, "NO ", 3) == 0 || ft_strncmp(line, "SO ", 3) == 0
-		|| ft_strncmp(line, "WE ", 3) == 0 || ft_strncmp(line, "EA ", 3) == 0
-		|| ft_strncmp(line, "F ", 2) == 0 || ft_strncmp(line, "C ", 2) == 0);
+	return (!(
+			ft_strncmp(line, "NO ", 3) == 0
+			|| ft_strncmp(line, "SO ", 3) == 0
+			|| ft_strncmp(line, "WE ", 3) == 0
+			|| ft_strncmp(line, "EA ", 3) == 0
+			|| ft_strncmp(line, "F ", 2) == 0
+			|| ft_strncmp(line, "C ", 2) == 0
+		));
 }
 
-bool handle_texture_line(t_config *cfg, char *line)
+bool	handle_texture_line(t_config *cfg, char *line)
 {
 	if (!line)
 		return (false);
@@ -51,7 +56,7 @@ bool handle_texture_line(t_config *cfg, char *line)
 	return (true);
 }
 
-bool handle_map_line(char **map, char *line, int *y, int fd)
+bool	handle_map_line(char **map, char *line, int *y, int fd)
 {
 	char	*newline;
 
@@ -69,7 +74,7 @@ bool handle_map_line(char **map, char *line, int *y, int fd)
 	return (true);
 }
 
-bool process_line(t_config *cfg, char *line, char **map, int *y, int fd)
+bool	process_line(t_config *cfg, char *line, char **map, int *y, int fd)
 {
 	if (line[0] == '\n' || line[0] == '\0')
 	{
