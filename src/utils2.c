@@ -6,20 +6,21 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 18:47:12 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 00:06:28 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 17:07:23 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-int is_valid_map_char(char c)
+int	is_valid_map_char(char c)
 {
-	return (c == '0' || c == '1' || c == 'N' || c == 'S' || c == 'E' || c == 'W');
+	return (c == '0' || c == '1' || c == 'N'
+		|| c == 'S' || c == 'E' || c == 'W');
 }
 
-int parse_color_component(char *str)
+int	parse_color_component(char *str)
 {
-	int value;
+	int	value;
 
 	value = ft_atoi(str);
 	if (value < 0 || value > 255)
@@ -32,9 +33,10 @@ int parse_color_component(char *str)
 	return (value);
 }
 
-char **read_cub_file(const char *path, t_config *cfg, int *out_height)
+char	**read_cub_file(const char *path, t_config *cfg, int *out_height)
 {
 	int		fd;
+	int		i;
 	char	*line;
 	char	**map;
 
@@ -53,30 +55,28 @@ char **read_cub_file(const char *path, t_config *cfg, int *out_height)
 	{
 		if (!process_line(cfg, line, map, out_height, fd))
 		{
-				int i = 0;
-
-				while (i < *out_height)
-						free(map[i++]);
-				free(map);
-				close(fd);
-				free(line);
-				return (NULL);
+			i = 0;
+			while (i < *out_height)
+				free(map[i++]);
+			free(map);
+			close(fd);
+			free(line);
+			return (NULL);
 		}
 		line = get_next_line(fd);
 	}
 	if (line)
-			free(line);
+		free(line);
 	map[*out_height] = NULL;
 	close(fd);
 	return (map);
 }
 
-
-int get_max_width(char **map, int height)
+int	get_max_width(char **map, int height)
 {
-	int i;
-	int len;
-	int max;
+	int	i;
+	int	len;
+	int	max;
 
 	i = 0;
 	max = 0;
@@ -90,12 +90,12 @@ int get_max_width(char **map, int height)
 	return (max);
 }
 
-bool pad_map_lines(char **map, int height, int max_width)
+bool	pad_map_lines(char **map, int height, int max_width)
 {
-	int i;
-	int len;
-	int j;
-	char *padded;
+	int		i;
+	int		len;
+	int		j;
+	char	*padded;
 
 	i = 0;
 	while (i < height)
