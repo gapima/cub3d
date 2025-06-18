@@ -6,7 +6,7 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 17:46:08 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 18:07:31 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,22 @@ typedef struct s_draw_vars
 	mlx_texture_t	*tex;
 }	t_draw_vars;
 
+typedef struct s_player_ctx
+{
+	int		*found;
+	t_config *cfg;
+	int		*px;
+	int		*py;
+}	t_player_ctx;
+
+typedef struct s_map_check_ctx
+{
+	char		**map;
+	int			height;
+	int			*px;
+	int			*py;
+}	t_map_check_ctx;
+
 /* ======================= CORE ======================= */
 
 bool			init_config(t_config *cfg);
@@ -170,6 +186,7 @@ bool			handle_map_line(char **map, char *line, int *y, int fd);
 bool			handle_texture_line(t_config *cfg, char *line);
 bool			is_map_line(char *line);
 void			parse_texture_or_color(t_config *cfg, char *line);
+bool			validate_and_prepare_map(char **map, int height, t_config *cfg);
 int				is_valid_map_char(char c);
 
 /* ======================= COLOR ======================= */
@@ -181,6 +198,7 @@ int				parse_color_component(char *str);
 
 int				get_max_width(char **map, int height);
 bool			pad_map_lines(char **map, int height, int max_width);
+bool			validate_player_and_chars(t_config *cfg, t_map_check_ctx *mctx);
 void			validate_closed_map(char **map, int height, int width);
 
 /* ======================= UTILS ======================= */

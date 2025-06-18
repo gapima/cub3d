@@ -6,28 +6,11 @@
 /*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:30:32 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 16:34:07 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 18:07:12 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-static bool	check_and_set_player(char c, int x, int y, int *found, t_config *cfg, int *px, int *py)
-{
-	if (ft_strchr("NSEW", c))
-	{
-		if (*found)
-		{
-			ft_putstr_fd("Error: More than one starting position found.\n", 2);
-			return (false);
-		}
-		*found = 1;
-		*px = x;
-		*py = y;
-		set_player_direction(cfg, c);
-	}
-	return (true);
-}
 
 static bool	is_valid_or_report_error(char c)
 {
@@ -42,20 +25,35 @@ static bool	is_valid_or_report_error(char c)
 	return (true);
 }
 
-static bool	validate_player_and_chars(char **map, int height, t_config *cfg, int *px, int *py)
+static bool	check_and_set_player(char c, int x, int y, t_player_ctx *ctx)
+{
+	if (ft_strchr("NSEW", c))
+	{
+		if (*(ctx->found))
+		{
+			ft_putstr_fd("Error: More than one starting position found.\n", 2);
+			return (false);
+		}
+		*(ctx->found) = 1;
+		*(ctx->px) = x;
+		*(ctx->py) = y;
+		set_player_direction(ctx->cfg, c);
+	}
+	return (true);
+}
+
+static bool	scan_map_for_player(char **map, int height, t_player_ctx *ctx)
 {
 	int	i;
 	int	j;
-	int	found;
 
 	i = 0;
-	found = 0;
 	while (i < height)
 	{
 		j = 0;
 		while (map[i][j])
 		{
-			if (!check_and_set_player(map[i][j], j, i, &found, cfg, px, py))
+			if (!check_and_set_player(map[i][j], j, i, ctx))
 				return (false);
 			if (!is_valid_or_report_error(map[i][j]))
 				return (false);
@@ -63,30 +61,26 @@ static bool	validate_player_and_chars(char **map, int height, t_config *cfg, int
 		}
 		i++;
 	}
+	return (true);
+}
+
+bool	validate_player_and_chars(t_config *cfg, t_map_check_ctx *mctx)
+{
+	int				found;
+	t_player_ctx	ctx;
+
+	found = 0;
+	ctx.cfg = cfg;
+	ctx.found = &found;
+	ctx.px = mctx->px;
+	ctx.py = mctx->py;
+	if (!scan_map_for_player(mctx->map, mctx->height, &ctx))
+		return (false);
 	if (!found)
 	{
 		ft_putstr_fd("Error: No player starting position found.\n", 2);
 		return (false);
 	}
-	return (true);
-}
-
-static bool	validate_and_prepare_map(char **map, int height, t_config *cfg)
-{
-	int	max_width;
-	int	player_x;
-	int	player_y;
-
-	max_width = get_max_width(map, height);
-	if (!pad_map_lines(map, height, max_width))
-		return (false);
-	if (!validate_player_and_chars(map, height, cfg, &player_x, &player_y))
-		return (false);
-	validate_closed_map(map, height, max_width);
-	cfg->player.pos_x = player_x + 0.5;
-	cfg->player.pos_y = player_y + 0.5;
-	map[player_y][player_x] = '0';
-	cfg->map = map;
 	return (true);
 }
 
