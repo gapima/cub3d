@@ -30,17 +30,24 @@ MLX_FLAGS = -I$(MLX_DIR)/include -L$(BUILD_DIR) -lmlx42 -ldl -lm -lglfw -pthread
 SRC = $(wildcard $(SRC_DIR)/*.c)
 OBJ = $(SRC:.c=.o)
 
+# Compilação dos objetos (forçando dependência da MLX antes)
+%.o: %.c $(MLX_LIB)
+	$(CC) $(CFLAGS) -c $< -o $@
+
 # Regras principais
 all: $(NAME)
 
 $(MLX_LIB):
-	git clone https://github.com/codam-coding-college/MLX42.git $(MLX_DIR) || true
+	@if [ ! -d $(MLX_DIR)/.git ]; then \
+		rm -rf $(MLX_DIR); \
+		git clone https://github.com/codam-coding-college/MLX42.git $(MLX_DIR); \
+	fi
 	cd $(MLX_DIR) && cmake -B build && cmake --build build
 
 $(LIBFT_LIB):
 	$(MAKE) -C $(LIBFT_DIR)
 
-$(NAME): $(OBJ) $(MLX_LIB) $(LIBFT_LIB)
+$(NAME): $(OBJ) $(LIBFT_LIB)
 	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -iquote $(INCLUDE_DIR) -I$(LIBFT_DIR) \
 		-I$(MLX_DIR)/include $(OBJ) $(LIBFT_LIB) $(MLX_FLAGS) -o $(NAME)
 
@@ -57,4 +64,4 @@ re: fclean all
 
 bonus: all
 
-.PHONY: all clean fclean re bonus valgrind
+.PHONY: all clean fclean re bonus
