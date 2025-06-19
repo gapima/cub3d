@@ -1,0 +1,13 @@
+NO ./textures/wall_no.png
+SO ./textures/wall_so.png
+WE ./textures/wall_we.png
+EA ./textures/wall_ea.png
+
+F 100,100
+C 200,200,200
+
+11111
+1N001
+10001
+10001
+11111

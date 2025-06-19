@@ -1,9 +1,9 @@
 NO ./textures/wall_no.png
 SO ./textures/wall_so.png
-F 193,154,107
 WE ./textures/wall_ea.png
 EA ./textures/wall_we.png
 
+F 193,154,107
 C 220,220,220
         1111111111111111111111111
         1111111100110000000000001
