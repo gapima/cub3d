@@ -6,27 +6,11 @@
 /*   By: glima <glima@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 19:15:41 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 21:40:55 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 21:47:41 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-
-// uint32_t	get_texture_pixel(mlx_texture_t *tex, int x, int y)
-// {
-// 	int		index;
-// 	uint8_t	r;
-// 	uint8_t	g;
-// 	uint8_t	b;
-// 	uint8_t	a;
-
-// 	index = (y * tex->width + x) * 4;
-// 	r = tex->pixels[index + 0];
-// 	g = tex->pixels[index + 1];
-// 	b = tex->pixels[index + 2];
-// 	a = tex->pixels[index + 3];
-// 	return (r << 24 | g << 16 | b << 8 | a);
-// }
 
 uint32_t	get_texture_pixel(mlx_texture_t *tex, int x, int y)
 {
@@ -34,7 +18,7 @@ uint32_t	get_texture_pixel(mlx_texture_t *tex, int x, int y)
 	uint8_t	r, g, b, a;
 
 	if (!tex || x < 0 || y < 0 || x >= (int)tex->width || y >= (int)tex->height)
-		return (0); // cor preta como fallback (ou outra que quiser)
+		return (0);
 
 	index = (y * tex->width + x) * 4;
 	r = tex->pixels[index + 0];
