@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
+/*   By: glima <glima@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 00:25:03 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 18:16:22 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 21:02:50 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,10 +120,10 @@ typedef struct s_draw_vars
 
 typedef struct s_player_ctx
 {
-	int		*found;
-	t_config *cfg;
-	int		*px;
-	int		*py;
+	int			*found;
+	t_config	*cfg;
+	int			*px;
+	int			*py;
 }	t_player_ctx;
 
 typedef struct s_map_check_ctx

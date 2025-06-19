@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
+/*   By: glima <glima@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 13:40:42 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 18:45:43 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/18 21:04:45 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ static void	move_backward(t_config *cfg)
 	p = &cfg->player;
 	new_x = p->pos_x - p->dir_x * MOVE_SPEED;
 	new_y = p->pos_y - p->dir_y * MOVE_SPEED;
-
 	if (cfg->map[(int)new_y][(int)new_x] == '0')
 	{
 		p->pos_x = new_x;
@@ -38,7 +37,6 @@ static void	strafe_left(t_config *cfg)
 	p = &cfg->player;
 	new_x = p->pos_x - p->plane_x * MOVE_SPEED;
 	new_y = p->pos_y - p->plane_y * MOVE_SPEED;
-
 	if (cfg->map[(int)new_y][(int)new_x] == '0')
 	{
 		p->pos_x = new_x;
@@ -55,7 +53,6 @@ static void	strafe_right(t_config *cfg)
 	p = &cfg->player;
 	new_x = p->pos_x + p->plane_x * MOVE_SPEED;
 	new_y = p->pos_y + p->plane_y * MOVE_SPEED;
-
 	if (cfg->map[(int)new_y][(int)new_x] == '0')
 	{
 		p->pos_x = new_x;
@@ -88,7 +85,6 @@ void	handle_input(mlx_key_data_t keydata, void *param)
 		mlx_close_window(cfg->mlx);
 		return ;
 	}
-
 	if (mlx_is_key_down(cfg->mlx, MLX_KEY_W))
 		move_forward(cfg);
 	if (mlx_is_key_down(cfg->mlx, MLX_KEY_S))
