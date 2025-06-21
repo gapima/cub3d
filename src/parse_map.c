@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: glima <glima@student.42sp.org.br>          +#+  +:+       +#+        */
+/*   By: glima <glima@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 16:30:32 by glima             #+#    #+#             */
-/*   Updated: 2025/06/18 18:07:12 by glima            ###   ########.fr       */
+/*   Updated: 2025/06/21 20:09:13 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static bool	is_valid_or_report_error(char c)
 	{
 		ft_putstr_fd("Error: Invalid character: ", 2);
 		ft_putchar_fd(c, 2);
-		printf("%c", c);
 		ft_putchar_fd('\n', 2);
 		return (false);
 	}
